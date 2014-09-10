@@ -27,7 +27,26 @@ namespace unirest_net.request
 
         public Dictionary<String, String> Headers { get; protected set; }
 
-        public MultipartFormDataContent Body { get; private set; }
+        private HttpContent _body;
+
+        public HttpContent Body
+        {
+            get
+            {
+                lock (this)
+                {
+                    if (_body == null)
+                    {
+                        _body = new MultipartFormDataContent();
+                    }
+                }
+                return _body;
+            }
+            private set
+            {
+                _body = value;
+            }
+        }
 
         // Should add overload that takes URL object
         public HttpRequest(HttpMethod method, string url)
@@ -52,7 +71,6 @@ namespace unirest_net.request
             URL = locurl;
             HttpMethod = method;
             Headers = new Dictionary<string, string>();
-            Body = new MultipartFormDataContent();
 
         }
 
@@ -93,7 +111,10 @@ namespace unirest_net.request
             if (value == null)
                 return this;
 
-            Body.Add(new StringContent(value.ToString()), name);
+            if (!(Body is MultipartFormDataContent))
+                Body = new MultipartFormDataContent();
+            
+            (Body as MultipartFormDataContent).Add(new StringContent(value.ToString()), name);
 
             hasFields = true;           
 
@@ -120,7 +141,10 @@ namespace unirest_net.request
             imageContent.Headers.ContentType =
                 MediaTypeHeaderValue.Parse("image/jpeg");
 
-            Body.Add(imageContent, name, "image.jpg");
+            if (!(Body is MultipartFormDataContent))
+                Body = new MultipartFormDataContent();
+            
+            (Body as MultipartFormDataContent).Add(imageContent, name, "image.jpg");
 
             hasFields = true;
             return this;
@@ -169,7 +193,11 @@ namespace unirest_net.request
             if (value == null)
                 return this;
 
-            Body.Add(new StreamContent(value));
+            if (!(Body is MultipartFormDataContent))
+                Body = new MultipartFormDataContent();
+
+            (Body as MultipartFormDataContent).Add(new StreamContent(value));
+
             hasFields = true;
             return this;
         }
@@ -189,14 +217,20 @@ namespace unirest_net.request
                 throw new InvalidOperationException("Can't add fields to a request with an explicit body");
             }
 
-            Body.Add(new FormUrlEncodedContent(parameters.Where(kv => isPrimitiveType(kv.Value)).Select(kv => new KeyValuePair<string, string>(kv.Key, kv.Value.ToString()))));
+            if (!(Body is MultipartFormDataContent))
+                Body = new MultipartFormDataContent();
+
+            (Body as MultipartFormDataContent).Add(
+                new FormUrlEncodedContent(parameters
+                    .Where(kv => isPrimitiveType(kv.Value))
+                    .Select(kv => new KeyValuePair<string, string>(kv.Key, kv.Value.ToString()))));
 
             foreach (var stream in parameters.Where(kv => kv.Value is Stream).Select(kv => kv.Value))
             {
                 if (stream == null)
                     continue;
 
-                Body.Add(new StreamContent(stream as Stream));
+                (Body as MultipartFormDataContent).Add(new StreamContent(stream as Stream));
             }
 
             hasFields = true;
@@ -226,7 +260,7 @@ namespace unirest_net.request
             if (body == null)
                 return this;
 
-            Body = new MultipartFormDataContent { new StringContent(body) };
+            Body = new StringContent(body);
             hasExplicitBody = true;
             return this;
         }
@@ -258,7 +292,7 @@ namespace unirest_net.request
             }
             else
             {
-                Body = new MultipartFormDataContent { new StringContent(JsonConvert.SerializeObject(body)) };
+                Body = new StringContent(JsonConvert.SerializeObject(body));
             }
 
             hasExplicitBody = true;

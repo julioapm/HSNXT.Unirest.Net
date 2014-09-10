@@ -56,16 +56,26 @@ namespace unirest_net.http
                 request.Headers.Add("Authorization", authValue);
             }
 
+            //append body content
+            if (request.Body != null)
+            {
+                if (!(request.Body is MultipartFormDataContent) || (request.Body as MultipartFormDataContent).Any())
+                    msg.Content = request.Body;
+            }
+
             //append all headers
             foreach (var header in request.Headers)
             {
-                msg.Headers.TryAddWithoutValidation(header.Key, header.Value);
-            }
-
-            //append body content
-            if (request.Body.Any())
-            {
-                msg.Content = request.Body;
+                string contentTypeKey = "Content-type";
+                if (header.Key.Equals(contentTypeKey, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    msg.Content.Headers.Remove(contentTypeKey);
+                    msg.Content.Headers.Add(contentTypeKey, header.Value);
+                }
+                else
+                {
+                    msg.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
             }
 
             //process message with the filter before sending
