@@ -242,7 +242,7 @@ namespace unirest_net.request
             if (obj == null)
                 return false;
 
-            return obj.GetType().IsPrimitive;
+            return ((obj is string) || (obj.GetType().IsPrimitive));
         }
 
         public HttpRequest body(string body)
