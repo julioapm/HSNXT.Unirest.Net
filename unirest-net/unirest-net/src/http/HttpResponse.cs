@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace unirest_net.http
@@ -31,7 +32,7 @@ namespace unirest_net.http
                     Task.WaitAll(stringTask);
                     Body = (T)(object)stringTask.Result;
                 }
-                else if (typeof(Stream).IsAssignableFrom(typeof(T)))
+                else if (typeof(Stream).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
                 {
                     Body = (T)(object)Raw;
                 }

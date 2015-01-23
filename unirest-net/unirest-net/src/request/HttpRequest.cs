@@ -1,12 +1,14 @@
 ﻿using Newtonsoft.Json;
+using PCLStorage;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading.Tasks;
-using System.Net;
 using unirest_net.http;
 
 namespace unirest_net.request
@@ -202,6 +204,55 @@ namespace unirest_net.request
             return this;
         }
 
+        public HttpRequest field(string name, Uri filePath)
+        {
+            if ((HttpMethod == HttpMethod.Get) || (HttpMethod == HttpMethod.Head) || (HttpMethod == HttpMethod.Trace))
+            {
+                throw new InvalidOperationException(string.Format("Can't add body to {0} request.", HttpMethod));
+            }
+
+            if (hasExplicitBody)
+            {
+                throw new InvalidOperationException("Can't add fields to a request with an explicit body");
+            }
+
+            if (null == filePath)
+                return this;
+
+            string strFilePath = filePath.LocalPath.ToString();
+
+            if (!filePath.IsLoopback)
+            {
+                throw new InvalidOperationException(string.Format("Cannot load remote files: {0}", strFilePath));
+            }
+
+            try
+            {
+                IFolder rootFolder = FileSystem.Current.LocalStorage;
+             
+                var fileExists = rootFolder.CheckExistsAsync(strFilePath).Result;
+                if (fileExists == ExistenceCheckResult.NotFound)
+                {
+                    throw new InvalidOperationException(string.Format("Cannot find file: {0}", strFilePath));                    
+                }
+
+                var fileHandle = rootFolder.GetFileAsync(strFilePath).Result;
+                Stream value = fileHandle.OpenAsync(FileAccess.Read).Result;
+
+                if (!(Body is MultipartFormDataContent))
+                    Body = new MultipartFormDataContent();
+
+                (Body as MultipartFormDataContent).Add(new StreamContent(value), name, Path.GetFileName(strFilePath));
+
+                hasFields = true;
+                return this;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(string.Format("Cannot read file: {0}", filePath), ex);
+            }            
+        }
+
         public HttpRequest fields(Dictionary<string, object> parameters)
         {
             if (parameters == null)
@@ -242,7 +293,7 @@ namespace unirest_net.request
             if (obj == null)
                 return false;
 
-            return ((obj is string) || (obj.GetType().IsPrimitive));
+            return ((obj is string) || (obj.GetType().GetTypeInfo().IsPrimitive));
         }
 
         public HttpRequest body(string body)
