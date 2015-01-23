@@ -218,12 +218,18 @@ namespace unirest_net.request
 
             if (null == filePath)
                 return this;
+                        
+            
+            string strFilePath = filePath.ToString();
 
-            string strFilePath = filePath.LocalPath.ToString();
-
-            if (!filePath.IsLoopback)
+            if (filePath.IsAbsoluteUri)
             {
-                throw new InvalidOperationException(string.Format("Cannot load remote files: {0}", strFilePath));
+                if (!filePath.IsLoopback)
+                {
+                    throw new InvalidOperationException(string.Format("Cannot resolve path to file: {0}", filePath.ToString()));
+                }
+
+                strFilePath = filePath.LocalPath.ToString();
             }
 
             try
@@ -236,7 +242,7 @@ namespace unirest_net.request
                     throw new InvalidOperationException(string.Format("Cannot find file: {0}", strFilePath));                    
                 }
 
-                var fileHandle = rootFolder.GetFileAsync(strFilePath).Result;
+                var fileHandle = FileSystem.Current.GetFileFromPathAsync(strFilePath).Result;
                 Stream value = fileHandle.OpenAsync(FileAccess.Read).Result;
 
                 if (!(Body is MultipartFormDataContent))
