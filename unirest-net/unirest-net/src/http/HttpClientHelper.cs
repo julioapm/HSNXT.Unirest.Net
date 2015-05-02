@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text;
 using System;
+using System.IO;
 
 using unirest_net.request;
 
@@ -20,7 +21,7 @@ namespace unirest_net.http
 
             return new HttpResponse<T>(response);
         }
-
+        
         public static Task<HttpResponse<T>> RequestAsync<T>(HttpRequest request)
         {
             var responseTask = RequestHelper(request);
@@ -31,16 +32,53 @@ namespace unirest_net.http
             });
         }
 
+        public static HttpResponse<T> RequestStream<T>(HttpRequest request)
+        {
+            var responseTask = RequestStreamHelper(request);
+            Task.WaitAll(responseTask);
+            var response = responseTask.Result;
+
+            return new HttpResponse<T>(response);
+        }
+
+        public static Task<HttpResponse<T>> RequestStreamAsync<T>(HttpRequest request)
+        {
+            var responseTask = RequestStreamHelper(request);
+            return Task<HttpResponse<T>>.Factory.StartNew(() =>
+            {
+                Task.WaitAll(responseTask);
+                return new HttpResponse<T>(responseTask.Result);
+            });
+        }
+
         private static Task<HttpResponseMessage> RequestHelper(HttpRequest request)
+        {
+            //create http request
+            HttpClient client = new HttpClient();
+            HttpRequestMessage msg = prepareRequest(request, client);
+            return client.SendAsync(msg);
+        }
+
+        private static Task<HttpResponseMessage> RequestStreamHelper(HttpRequest request)
+        {
+            //create http request
+            HttpClient client = new HttpClient();
+            HttpRequestMessage msg = prepareRequest(request, client);
+            
+            client.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
+            return client.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+        }
+
+
+        private static HttpRequestMessage prepareRequest(HttpRequest request, HttpClient client)
         {
             if (!request.Headers.ContainsKey("user-agent"))
             {
                 request.Headers.Add("user-agent", USER_AGENT);
             }
 
-            //create http client and request
-            var client = new HttpClient();
-            var msg = new HttpRequestMessage(request.HttpMethod, request.URL);
+            //create http request
+            HttpRequestMessage msg = new HttpRequestMessage(request.HttpMethod, request.URL);
 
             //process basic authentication
             if (request.NetworkCredentials != null)
@@ -84,7 +122,7 @@ namespace unirest_net.http
                 request.Filter(msg);
             }
 
-            return client.SendAsync(msg);
+            return msg;
         }
     }
 }

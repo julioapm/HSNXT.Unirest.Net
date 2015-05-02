@@ -376,6 +376,16 @@ namespace unirest_net.request
             return HttpClientHelper.RequestAsync<Stream>(this);
         }
 
+        public HttpResponse<Stream> asStream()
+        {
+            return HttpClientHelper.RequestStream<Stream>(this);
+        }
+
+        public Task<HttpResponse<Stream>> asStreamAsync()
+        {
+            return HttpClientHelper.RequestStreamAsync<Stream>(this);
+        }
+
         public HttpResponse<T> asJson<T>()
         {
             return HttpClientHelper.Request<T>(this);
