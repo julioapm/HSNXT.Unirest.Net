@@ -368,20 +368,10 @@ namespace unirest_net.request
 
         public HttpResponse<Stream> asBinary()
         {
-            return HttpClientHelper.Request<Stream>(this);
-        }
-
-        public Task<HttpResponse<Stream>> asBinaryAsync()
-        {
-            return HttpClientHelper.RequestAsync<Stream>(this);
-        }
-
-        public HttpResponse<Stream> asStream()
-        {
             return HttpClientHelper.RequestStream<Stream>(this);
         }
 
-        public Task<HttpResponse<Stream>> asStreamAsync()
+        public Task<HttpResponse<Stream>> asBinaryAsync()
         {
             return HttpClientHelper.RequestStreamAsync<Stream>(this);
         }
