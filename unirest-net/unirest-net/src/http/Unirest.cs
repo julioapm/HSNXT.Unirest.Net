@@ -46,5 +46,10 @@ namespace unirest_net.http
         {
             return new HttpRequest(HttpMethod.Trace, url);
         }
+
+        public static void setTimeouts(long connectionTimeout)
+        {
+            HttpClientHelper.ConnectionTimeout = connectionTimeout;
+        }
     }
 }
