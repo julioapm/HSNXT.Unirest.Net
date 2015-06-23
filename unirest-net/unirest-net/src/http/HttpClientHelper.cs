@@ -55,7 +55,7 @@ namespace unirest_net.http
         {
             //create http request
             HttpClient client = new HttpClient();
-            client.Timeout = TimeSpan.FromMilliseconds(request.TimeOut);
+            client.Timeout = request.TimeOut;
             HttpRequestMessage msg = prepareRequest(request, client);
             return client.SendAsync(msg);
         }
@@ -64,7 +64,7 @@ namespace unirest_net.http
         {
             //create http request
             HttpClient client = new HttpClient();
-            client.Timeout = TimeSpan.FromMilliseconds(request.TimeOut);
+            client.Timeout = request.TimeOut;
             HttpRequestMessage msg = prepareRequest(request, client);
             
             client.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
