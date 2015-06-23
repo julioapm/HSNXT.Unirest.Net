@@ -16,8 +16,28 @@ namespace unirest_net.request
     public class HttpRequest
     {
         private bool hasFields;
-
+        
         private bool hasExplicitBody;
+
+        private int timeOut = 30000;
+        public int TimeOut
+        {
+            get
+            {
+                return timeOut;
+            }
+            set
+            {
+                if((value > 120000) || (value <= 0))
+                {
+                    timeOut = -1;
+                }
+                else
+                {
+                    timeOut = value;
+                }
+            }
+        }
 
         public NetworkCredential NetworkCredentials { get; protected set; }
 
