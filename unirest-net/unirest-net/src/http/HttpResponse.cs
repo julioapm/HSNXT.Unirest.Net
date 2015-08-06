@@ -32,7 +32,7 @@ namespace unirest_net.http
                     Task.WaitAll(stringTask);
                     Body = (T)(object)stringTask.Result;
                 }
-                else if (typeof(Stream).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
+                else if (typeof(Stream).GetType().IsAssignableFrom(typeof(T).GetType()))
                 {
                     Body = (T)(object)Raw;
                 }

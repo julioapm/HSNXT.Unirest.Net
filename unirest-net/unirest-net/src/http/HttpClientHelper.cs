@@ -62,6 +62,7 @@ namespace unirest_net.http
         {
             //create http request
             HttpClient client = new HttpClient();
+            client.Timeout = request.TimeOut;
             HttpRequestMessage msg = prepareRequest(request, client);
 
             // set connection timeout
@@ -73,6 +74,7 @@ namespace unirest_net.http
         {
             //create http request
             HttpClient client = new HttpClient();
+            client.Timeout = request.TimeOut;
             HttpRequestMessage msg = prepareRequest(request, client);
 
             // set connection timeout

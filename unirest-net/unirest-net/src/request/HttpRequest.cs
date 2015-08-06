@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using PCLStorage;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,8 +15,28 @@ namespace unirest_net.request
     public class HttpRequest
     {
         private bool hasFields;
-
+        
         private bool hasExplicitBody;
+
+        private TimeSpan timeOut = TimeSpan.FromSeconds(30);
+        public TimeSpan TimeOut
+        {
+            get
+            {
+                return timeOut;
+            }
+            set
+            {
+                if ((value > TimeSpan.MaxValue) || (value < TimeSpan.MinValue))
+                {
+                    timeOut = TimeSpan.MaxValue;
+                }
+                else
+                {
+                    timeOut = value;
+                }
+            }
+        }
 
         public NetworkCredential NetworkCredentials { get; protected set; }
 
@@ -204,7 +223,9 @@ namespace unirest_net.request
             return this;
         }
 
-        public HttpRequest field(string name, Uri filePath)
+        private int fileCount = 0;
+
+        public HttpRequest field(string name, Stream fileStream)
         {
             if ((HttpMethod == HttpMethod.Get) || (HttpMethod == HttpMethod.Head) || (HttpMethod == HttpMethod.Trace))
             {
@@ -216,47 +237,16 @@ namespace unirest_net.request
                 throw new InvalidOperationException("Can't add fields to a request with an explicit body");
             }
 
-            if (null == filePath)
+            if ((null == fileStream) || (!fileStream.CanRead))
                 return this;
-                        
-            
-            string strFilePath = filePath.ToString();
+         
+            if (!(Body is MultipartFormDataContent))
+                Body = new MultipartFormDataContent();
 
-            if (filePath.IsAbsoluteUri)
-            {
-                if (!filePath.IsLoopback)
-                {
-                    throw new InvalidOperationException(string.Format("Cannot resolve path to file: {0}", filePath.ToString()));
-                }
+            (Body as MultipartFormDataContent).Add(new StreamContent(fileStream), "file" + ++fileCount, name);
 
-                strFilePath = filePath.LocalPath.ToString();
-            }
-
-            try
-            {
-                IFolder rootFolder = FileSystem.Current.LocalStorage;
-             
-                var fileExists = rootFolder.CheckExistsAsync(strFilePath).Result;
-                if (fileExists == ExistenceCheckResult.NotFound)
-                {
-                    throw new InvalidOperationException(string.Format("Cannot find file: {0}", strFilePath));                    
-                }
-
-                var fileHandle = FileSystem.Current.GetFileFromPathAsync(strFilePath).Result;
-                Stream value = fileHandle.OpenAsync(FileAccess.Read).Result;
-
-                if (!(Body is MultipartFormDataContent))
-                    Body = new MultipartFormDataContent();
-
-                (Body as MultipartFormDataContent).Add(new StreamContent(value), name, Path.GetFileName(strFilePath));
-
-                hasFields = true;
-                return this;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException(string.Format("Cannot read file: {0}", filePath), ex);
-            }            
+            hasFields = true;
+            return this;
         }
 
         public HttpRequest fields(Dictionary<string, object> parameters)
@@ -299,7 +289,7 @@ namespace unirest_net.request
             if (obj == null)
                 return false;
 
-            return ((obj is string) || (obj.GetType().GetTypeInfo().IsPrimitive));
+            return ((obj is string) || (obj.GetType().IsPrimitive));
         }
 
         public HttpRequest body(string body)
