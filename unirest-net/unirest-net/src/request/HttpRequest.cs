@@ -225,7 +225,7 @@ namespace unirest_net.request
 
         private int fileCount = 0;
 
-        public HttpRequest field(string name, Stream fileStream)
+        public HttpRequest field(string name, Stream fileStream, String filename=null)
         {
             if ((HttpMethod == HttpMethod.Get) || (HttpMethod == HttpMethod.Head) || (HttpMethod == HttpMethod.Trace))
             {
@@ -243,7 +243,8 @@ namespace unirest_net.request
             if (!(Body is MultipartFormDataContent))
                 Body = new MultipartFormDataContent();
 
-            (Body as MultipartFormDataContent).Add(new StreamContent(fileStream), "file" + ++fileCount, name);
+            var fname = "file" + ++fileCount;
+            (Body as MultipartFormDataContent).Add(new StreamContent(fileStream), filename ?? fname , name);
 
             hasFields = true;
             return this;
