@@ -9,15 +9,53 @@ using unirest_net.request;
 
 namespace unirest_net.http
 {
-    public class HttpClientHelper
+    public static class HttpClientHelper
     {
-        private static long _connectionTimeout = 10000;
         private const string USER_AGENT = "unirest-net/1.0";
 
-        public static long ConnectionTimeout
+        //singleton access to HttpClient
+        private static HttpClient _sharedHttpClient = null;
+        private static object syncRoot = new object();
+        
+        private static HttpClient sharedClient
         {
-            get { return _connectionTimeout; }
-            set { _connectionTimeout = value; }
+            get
+            {
+                lock(syncRoot)
+                {
+                    if (_sharedHttpClient == null)
+                    {
+                        _sharedHttpClient = new HttpClient();
+                        _sharedHttpClient.Timeout = TimeSpan.FromMinutes(10);
+                    }
+                    return _sharedHttpClient;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Use this timeout value unless request specifies its own value for timeout
+        /// Throws System.Threading.Tasks.TaskCanceledException when timeout
+        /// </summary>
+        public static TimeSpan ConnectionTimeout
+        {
+            get { return sharedClient.Timeout; }
+            set { sharedClient.Timeout = value; }
+        }
+
+        /// <summary>
+        /// Do not dispose HttpClient upon every http request.
+        /// This method should be called upon end of application execution.
+        /// </summary>
+        public static void Shutdown()
+        {
+            lock (syncRoot)
+            {
+                if (_sharedHttpClient != null)
+                {
+                    _sharedHttpClient.Dispose();
+                }
+            }
         }
 
         public static HttpResponse<T> Request<T>(HttpRequest request)
@@ -61,27 +99,19 @@ namespace unirest_net.http
         private static Task<HttpResponseMessage> RequestHelper(HttpRequest request)
         {
             //create http request
-            HttpClient client = new HttpClient();
-            client.Timeout = request.TimeOut;
-            HttpRequestMessage msg = prepareRequest(request, client);
-
-            // set connection timeout
-            client.Timeout = TimeSpan.FromMilliseconds(ConnectionTimeout);
-            return client.SendAsync(msg);
+            if(request.TimeOut != TimeSpan.MaxValue)
+                sharedClient.Timeout = request.TimeOut;
+            HttpRequestMessage msg = prepareRequest(request, sharedClient);
+            return sharedClient.SendAsync(msg);
         }
 
         private static Task<HttpResponseMessage> RequestStreamHelper(HttpRequest request)
         {
             //create http request
-            HttpClient client = new HttpClient();
-            client.Timeout = request.TimeOut;
-            HttpRequestMessage msg = prepareRequest(request, client);
-
-            // set connection timeout
-            client.Timeout = TimeSpan.FromMilliseconds(ConnectionTimeout);
-            return client.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
+            sharedClient.Timeout = request.TimeOut;
+            HttpRequestMessage msg = prepareRequest(request, sharedClient);
+            return sharedClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
         }
-
 
         private static HttpRequestMessage prepareRequest(HttpRequest request, HttpClient client)
         {

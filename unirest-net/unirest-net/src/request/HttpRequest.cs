@@ -18,7 +18,7 @@ namespace unirest_net.request
         
         private bool hasExplicitBody;
 
-        private TimeSpan timeOut = TimeSpan.FromSeconds(30);
+        private TimeSpan timeOut = TimeSpan.MaxValue;
         public TimeSpan TimeOut
         {
             get

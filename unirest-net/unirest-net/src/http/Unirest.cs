@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 
 using unirest_net.request;
 
@@ -48,12 +49,13 @@ namespace unirest_net.http
         }
 
         /// <summary>
-        /// Throw System.Threading.Tasks.TaskCanceledException when timeout
+        /// Use this timeout value unless request specifies its own value for timeout
+        /// Throws System.Threading.Tasks.TaskCanceledException when timeout
         /// </summary>
-        /// <param name="connectionTimeout"></param>
-        public static void setTimeouts(long connectionTimeout)
+        public static TimeSpan ConnectionTimeout
         {
-            HttpClientHelper.ConnectionTimeout = connectionTimeout;
+            get { return HttpClientHelper.ConnectionTimeout; }
+            set { HttpClientHelper.ConnectionTimeout = value; }
         }
     }
 }
