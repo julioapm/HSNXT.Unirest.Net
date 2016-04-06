@@ -11,7 +11,14 @@ namespace unirest_net.http
 {
     public class HttpClientHelper
     {
+        private static long _connectionTimeout = 10000;
         private const string USER_AGENT = "unirest-net/1.0";
+
+        public static long ConnectionTimeout
+        {
+            get { return _connectionTimeout; }
+            set { _connectionTimeout = value; }
+        }
 
         public static HttpResponse<T> Request<T>(HttpRequest request)
         {
@@ -57,6 +64,9 @@ namespace unirest_net.http
             HttpClient client = new HttpClient();
             client.Timeout = request.TimeOut;
             HttpRequestMessage msg = prepareRequest(request, client);
+
+            // set connection timeout
+            client.Timeout = TimeSpan.FromMilliseconds(ConnectionTimeout);
             return client.SendAsync(msg);
         }
 
@@ -66,8 +76,9 @@ namespace unirest_net.http
             HttpClient client = new HttpClient();
             client.Timeout = request.TimeOut;
             HttpRequestMessage msg = prepareRequest(request, client);
-            
-            client.Timeout = TimeSpan.FromMilliseconds(System.Threading.Timeout.Infinite);
+
+            // set connection timeout
+            client.Timeout = TimeSpan.FromMilliseconds(ConnectionTimeout);
             return client.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
         }
 

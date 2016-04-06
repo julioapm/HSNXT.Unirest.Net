@@ -46,5 +46,14 @@ namespace unirest_net.http
         {
             return new HttpRequest(HttpMethod.Trace, url);
         }
+
+        /// <summary>
+        /// Throw System.Threading.Tasks.TaskCanceledException when timeout
+        /// </summary>
+        /// <param name="connectionTimeout"></param>
+        public static void setTimeouts(long connectionTimeout)
+        {
+            HttpClientHelper.ConnectionTimeout = connectionTimeout;
+        }
     }
 }
