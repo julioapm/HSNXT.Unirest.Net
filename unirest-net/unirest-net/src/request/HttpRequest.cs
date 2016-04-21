@@ -290,7 +290,9 @@ namespace unirest_net.request
             if (obj == null)
                 return false;
 
-            return ((obj is string) || (obj.GetType().IsPrimitive));
+            return ((obj is string) || (obj is bool) || (obj is byte) || (obj is sbyte)
+                || (obj is short) || (obj is ushort) || (obj is int) || (obj is uint) || (obj is long) || (obj is ulong)
+                || (obj is IntPtr) || (obj is UIntPtr) || (obj is char) || (obj is double) || (obj is float));
         }
 
         public HttpRequest body(string body)

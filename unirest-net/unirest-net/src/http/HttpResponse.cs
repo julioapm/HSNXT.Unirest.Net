@@ -26,13 +26,13 @@ namespace unirest_net.http
                 Task.WaitAll(streamTask);
                 Raw = streamTask.Result;
 
-                if (typeof(T) == typeof(String))
+                if (typeof(T) == typeof(string))
                 {
                     var stringTask = response.Content.ReadAsStringAsync();
                     Task.WaitAll(stringTask);
                     Body = (T)(object)stringTask.Result;
                 }
-                else if (typeof(Stream).GetType().IsAssignableFrom(typeof(T).GetType()))
+                else if (typeof(Stream).GetType().Equals(typeof(T).GetType()))
                 {
                     Body = (T)(object)Raw;
                 }
