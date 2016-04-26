@@ -108,7 +108,8 @@ namespace unirest_net.http
         private static Task<HttpResponseMessage> RequestStreamHelper(HttpRequest request)
         {
             //create http request
-            sharedClient.Timeout = request.TimeOut;
+            if (request.TimeOut != TimeSpan.MaxValue)
+                sharedClient.Timeout = request.TimeOut;
             HttpRequestMessage msg = prepareRequest(request, sharedClient);
             return sharedClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
         }
@@ -127,7 +128,7 @@ namespace unirest_net.http
             if (request.NetworkCredentials != null)
             {
                 string authToken = Convert.ToBase64String(
-                                    UTF8Encoding.UTF8.GetBytes(string.Format("{0}:{1}",
+                                        Encoding.UTF8.GetBytes(string.Format("{0}:{1}",
                                         request.NetworkCredentials.UserName,
                                         request.NetworkCredentials.Password))
                                     );
@@ -160,10 +161,7 @@ namespace unirest_net.http
             }
 
             //process message with the filter before sending
-            if (request.Filter != null)
-            {
-                request.Filter(msg);
-            }
+            request.Filter?.Invoke(msg);
 
             return msg;
         }

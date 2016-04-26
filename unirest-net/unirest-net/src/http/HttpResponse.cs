@@ -11,8 +11,11 @@ namespace unirest_net.http
     public class HttpResponse<T>
     {
         public int Code { get; private set; }
-        public Dictionary<String, String> Headers { get; private set; }
+
+        public Dictionary<string, string> Headers { get; private set; }
+
         public T Body { get; set; }
+
         public Stream Raw { get; private set; }
 
         public HttpResponse(System.Net.Http.HttpResponseMessage response)
