@@ -15,6 +15,7 @@ namespace unirest_net.http
 
         //singleton access to HttpClient
         private static HttpClient _sharedHttpClient = null;
+        private static TimeSpan timeout = TimeSpan.FromMinutes(10);
         private static object syncRoot = new object();
         
         private static HttpClient sharedClient
@@ -26,7 +27,7 @@ namespace unirest_net.http
                     if (_sharedHttpClient == null)
                     {
                         _sharedHttpClient = new HttpClient();
-                        _sharedHttpClient.Timeout = TimeSpan.FromMinutes(10);
+                        _sharedHttpClient.Timeout = timeout;
                     }
                     return _sharedHttpClient;
                 }
@@ -39,8 +40,8 @@ namespace unirest_net.http
         /// </summary>
         public static TimeSpan ConnectionTimeout
         {
-            get { return sharedClient.Timeout; }
-            set { sharedClient.Timeout = value; }
+            get { return timeout; }
+            set { timeout = value; }
         }
 
         /// <summary>
@@ -99,8 +100,6 @@ namespace unirest_net.http
         private static Task<HttpResponseMessage> RequestHelper(HttpRequest request)
         {
             //create http request
-            if(request.TimeOut != TimeSpan.MaxValue)
-                sharedClient.Timeout = request.TimeOut;
             HttpRequestMessage msg = prepareRequest(request, sharedClient);
             return sharedClient.SendAsync(msg);
         }
@@ -108,8 +107,6 @@ namespace unirest_net.http
         private static Task<HttpResponseMessage> RequestStreamHelper(HttpRequest request)
         {
             //create http request
-            if (request.TimeOut != TimeSpan.MaxValue)
-                sharedClient.Timeout = request.TimeOut;
             HttpRequestMessage msg = prepareRequest(request, sharedClient);
             return sharedClient.SendAsync(msg, HttpCompletionOption.ResponseHeadersRead);
         }
