@@ -67,7 +67,7 @@
         "System.Threading.Tasks": "",
         "System.Xml": "",
         "System.Xml.Linq": "",
-        "System.Xml.ReaderWriter": "",
+        "System.Xml.ReBaderWriter": "",
         "System.Xml.XDocument": ""
       }
     },
@@ -92,6 +92,6 @@
     }
   },
   "dependencies": {
-    "newtonsoft.json": "8.0.3"
+    "newtonsoft.json": "9.0.1"
   }
 }
