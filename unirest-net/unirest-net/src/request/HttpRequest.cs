@@ -244,7 +244,7 @@ namespace unirest_net.request
                 Body = new MultipartFormDataContent();
 
             var fname = "file" + ++fileCount;
-            (Body as MultipartFormDataContent).Add(new StreamContent(fileStream), filename ?? fname , name);
+            (Body as MultipartFormDataContent).Add(new StreamContent(fileStream), name, filename ?? fname);
 
             hasFields = true;
             return this;
