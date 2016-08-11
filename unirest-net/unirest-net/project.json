@@ -92,6 +92,6 @@
     }
   },
   "dependencies": {
-    "newtonsoft.json": "9.0.1"
+    "Newtonsoft.Json": "9.0.1"
   }
 }
