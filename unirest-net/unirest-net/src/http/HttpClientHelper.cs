@@ -146,7 +146,7 @@ namespace unirest_net.http
             foreach (var header in request.Headers)
             {
                 string contentTypeKey = "Content-type";
-                if (header.Key.Equals(contentTypeKey, StringComparison.CurrentCultureIgnoreCase))
+                if (header.Key.Equals(contentTypeKey, StringComparison.CurrentCultureIgnoreCase)&& msg.Content!=null)
                 {
                     msg.Content.Headers.Remove(contentTypeKey);
                     msg.Content.Headers.Add(contentTypeKey, header.Value);
