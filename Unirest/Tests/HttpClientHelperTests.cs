@@ -1,0 +1,42 @@
+﻿using System;
+using System.Net.Http;
+using FluentAssertions;
+using unirest_net.http;
+using unirest_net.request;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+// ReSharper disable ObjectCreationAsStatement
+namespace unirest_net_tests.http
+{
+    [TestClass]
+    public class HttpClientHelperTests
+    {
+        [TestMethod]
+        public void HttpClientHelper_Should_Request()
+        {
+            Action request = () => HttpClientHelper.Request<string>(new HttpRequest(HttpMethod.Get, "http://www.google.com"));
+            request.ShouldNotThrow();
+        }
+
+        [TestMethod]
+        public void HttpClientHelper_Should_Request_Async()
+        {
+            Action request = () => HttpClientHelper.RequestAsync<string>(new HttpRequest(HttpMethod.Get, "http://www.google.com"));
+            request.ShouldNotThrow();
+        }
+
+        [TestMethod]
+        public void HttpClientHelper_Should_Request_With_Fields()
+        {
+            Action request = () => HttpClientHelper.Request<string>(new HttpRequest(HttpMethod.Post, "http://www.google.com").SetField("test","value"));
+            request.ShouldNotThrow();
+        }
+
+        [TestMethod]
+        public void HttpClientHelper_Should_Request_Async_With_Fields()
+        {
+            Action request = () => HttpClientHelper.RequestAsync<string>(new HttpRequest(HttpMethod.Post, "http://www.google.com").SetField("test", "value"));
+            request.ShouldNotThrow();
+        }
+    }
+}
