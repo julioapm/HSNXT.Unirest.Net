@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using Fallk.Unirest.Net.Unirest;
 using unirest_net.request;
 
 namespace unirest_net.http
@@ -108,4 +109,54 @@ namespace unirest_net.http
         {
         }
     }
+    
+    public class GetRequestUrl : HttpRequestUrl
+    {
+        public GetRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Get, url, encodeSpaceAsPlusSign)
+        {
+        }
+    }
+    public class PutRequestUrl : HttpRequestUrl
+    {
+        public PutRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Put, url, encodeSpaceAsPlusSign)
+        {
+        }
+    }
+    public class PostRequestUrl : HttpRequestUrl
+    {
+        public PostRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Post, url, encodeSpaceAsPlusSign)
+        {
+        }
+    }
+    public class DeleteRequestUrl : HttpRequestUrl
+    {
+        public DeleteRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Delete, url, encodeSpaceAsPlusSign)
+        {
+        }
+    }
+    public class HeadRequestUrl : HttpRequestUrl
+    {
+        public HeadRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Head, url, encodeSpaceAsPlusSign)
+        {
+        }
+    }
+    public class OptionsRequestUrl : HttpRequestUrl
+    {
+        public OptionsRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Options, url, encodeSpaceAsPlusSign)
+        {
+        }
+    }
+    public class TraceRequestUrl : HttpRequestUrl
+    {
+        public TraceRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Trace, url, encodeSpaceAsPlusSign)
+        {
+        }
+    }
+    public class PatchRequestUrl : HttpRequestUrl
+    {
+        public PatchRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(Unirest.PatchMethod, url, encodeSpaceAsPlusSign)
+        {
+        }
+    }
+
 }

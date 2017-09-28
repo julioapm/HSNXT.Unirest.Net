@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using unirest_net.http;
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace unirest_net.request
 {
@@ -39,7 +40,7 @@ namespace unirest_net.request
             }
         }
 
-        public Uri Url { get; }
+        public virtual Uri Url { get; }
 
         public Uri Uri => Url;
 
@@ -51,7 +52,13 @@ namespace unirest_net.request
         /// Shortcut to <see cref="SetFields"/> or individual <see cref="SetField(string,object)"/> calls
         /// (use object initializer)
         /// </summary>
-        public Dictionary<string, object> Fields { get; } = new Dictionary<string, object>();
+        public FieldsDict Fields { get; }
+
+        /// <summary>
+        /// Shortcut to <see cref="SetFields"/> with SerializeObject
+        /// (use object initializer)
+        /// </summary>
+        public FieldsDictJson JsonFields { get; }
 
         /// <summary>
         /// Shortcut to <see cref="SetField(Stream)"/>
@@ -79,6 +86,14 @@ namespace unirest_net.request
         public string BodyString
         {
             set => SetBody(value);
+        }
+        
+        /// <summary>
+        /// Shortcut for <see cref="SetBody(string)"/> with parameter JsonConvert-ed
+        /// </summary>
+        public object BodyJson
+        {
+            set => SetBody(JsonConvert.SerializeObject(value));
         }
 
         /// <summary>
@@ -108,16 +123,13 @@ namespace unirest_net.request
         // Should add overload that takes URL object
         public HttpRequest(HttpMethod method, string url)
         {
+            Fields = new FieldsDict(this);
+            JsonFields = new FieldsDictJson(this);
             Body = _body.Value;
-            
-            Uri locurl;
 
-            if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out locurl))
+            if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var locurl))
             {
-                if (
-                    !(locurl.IsAbsoluteUri &&
-                      (locurl.Scheme == "http" || locurl.Scheme == "https")) ||
-                    !locurl.IsAbsoluteUri)
+                if (!(locurl.IsAbsoluteUri && (locurl.Scheme == "http" || locurl.Scheme == "https")) || !locurl.IsAbsoluteUri)
                 {
                     throw new ArgumentException("The url passed to the HttpMethod constructor is not a valid HTTP/S URL");
                 }
@@ -129,7 +141,6 @@ namespace unirest_net.request
 
             Url = locurl;
             HttpMethod = method;
-
         }
 
         public HttpRequest Header(string name, object value)
@@ -154,6 +165,12 @@ namespace unirest_net.request
 
         public HttpRequest SetField(string name, object value)
         {
+            if (value is byte[] || value is IEnumerable<byte>)
+            {
+                SetField(name, value as byte[]);
+                return this;
+            }
+            
             if (HttpMethod == HttpMethod.Get || HttpMethod == HttpMethod.Head || HttpMethod == HttpMethod.Trace)
             {
                 throw new InvalidOperationException($"Can't add body to {HttpMethod} request.");
@@ -421,6 +438,46 @@ namespace unirest_net.request
                    || obj is IntPtr || obj is UIntPtr || obj is char || obj is double || obj is float;
         }
 
+    }
+
+    public class FieldsDict : Dictionary<string, object>
+    {
+        private HttpRequest Request { get; set; }
+        
+        public FieldsDict(HttpRequest mast)
+        {
+            Request = mast;
+        }
+
+        public new object this[string key]
+        {
+            get => base[key];
+            set
+            {
+                Request.SetField(key, value);
+                base[key] = value;
+            }
+        }
+    }
+
+    public class FieldsDictJson : Dictionary<string, object>
+    {
+        private HttpRequest Request { get; set; }
+        
+        public FieldsDictJson(HttpRequest mast)
+        {
+            Request = mast;
+        }
+
+        public new object this[string key]
+        {
+            get => base[key];
+            set
+            {
+                Request.SetField(key, value);
+                base[key] = value;
+            }
+        }
     }
 
     public class HeadersDict : Dictionary<string, string>
