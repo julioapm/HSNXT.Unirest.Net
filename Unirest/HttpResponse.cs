@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace unirest_net.http
+namespace Fallk.Unirest.Net.Http
 {
     public class HttpResponse<T>
     {

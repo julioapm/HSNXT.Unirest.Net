@@ -6,11 +6,12 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Fallk.Unirest.Net.Http;
 using Newtonsoft.Json;
-using unirest_net.http;
+
 // ReSharper disable UnusedMethodReturnValue.Global
 
-namespace unirest_net.request
+namespace Fallk.Unirest.Net.request
 {
     public class HttpRequest
     {
@@ -76,7 +77,7 @@ namespace unirest_net.request
             set => Headers["User-Agent"] = value;
         }
 
-        private readonly Lazy<HttpContent> _body = new Lazy<HttpContent>(() => new MultipartFormDataContent());
+        //private readonly Lazy<HttpContent> _body = new Lazy<HttpContent>(() => new MultipartFormDataContent());
 
         public HttpContent Body { get; set; }
 
@@ -125,7 +126,7 @@ namespace unirest_net.request
         {
             Fields = new FieldsDict(this);
             JsonFields = new FieldsDictJson(this);
-            Body = _body.Value;
+            //Body = _body.Value;
 
             if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var locurl))
             {
@@ -194,7 +195,7 @@ namespace unirest_net.request
             return this;
         }
 
-        public HttpRequest SetField(string name, byte[] data)
+        public HttpRequest SetField(string name, byte[] data, string mediaType, string fileName)
         {
             if (HttpMethod == HttpMethod.Get || HttpMethod == HttpMethod.Head || HttpMethod == HttpMethod.Trace)
             {
@@ -210,14 +211,13 @@ namespace unirest_net.request
                 return this;
 
             //    here you can specify boundary if you need---^
-            var imageContent = new ByteArrayContent(data);
-            imageContent.Headers.ContentType =
-                MediaTypeHeaderValue.Parse("image/jpeg");
+            var baContent = new ByteArrayContent(data);
+            baContent.Headers.ContentType = MediaTypeHeaderValue.Parse(mediaType);
 
             if (!(Body is MultipartFormDataContent))
                 Body = new MultipartFormDataContent();
             
-            ((MultipartFormDataContent) Body).Add(imageContent, name, "image.jpg");
+            ((MultipartFormDataContent) Body).Add(baContent, name, fileName);
 
             _hasFields = true;
             return this;

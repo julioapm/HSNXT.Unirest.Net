@@ -1,5 +1,5 @@
 ﻿using System;
-using unirest_net.request;
+using Fallk.Unirest.Net.request;
 using System.Net.Http;
 using System.Web;
 
@@ -60,9 +60,9 @@ namespace Fallk.Unirest.Net.Unirest
             EncodeSpaceAsPlusSign = encodeSpaceAsPlusSign;
         }
 
-        public new HttpRequestUrl SetField(string key, string value)
+        public new HttpRequestUrl SetField(string key, object value)
         {
-            var val = GetValue(value);
+            var val = GetValue(value?.ToString() ?? "null");
             if (!HasFirstField)
             {
                 HasFirstField = true;

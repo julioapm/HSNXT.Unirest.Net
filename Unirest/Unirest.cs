@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net.Http;
+using Fallk.Unirest.Net.request;
 using Fallk.Unirest.Net.Unirest;
-using unirest_net.request;
 
-namespace unirest_net.http
+namespace Fallk.Unirest.Net.Http
 {
-    public class Unirest
+    public static class Unirest
     {
         internal static readonly HttpMethod PatchMethod = new HttpMethod("PATCH");
 
@@ -61,6 +61,7 @@ namespace unirest_net.http
         }
     }
 
+    [Obsolete("Use GetRequestUrl for more complete GET request query support")]
     public class GetRequest : HttpRequest
     {
         public GetRequest(string url) : base(HttpMethod.Get, url)

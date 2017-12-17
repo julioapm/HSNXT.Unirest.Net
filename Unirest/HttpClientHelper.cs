@@ -4,9 +4,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using unirest_net.request;
+using Fallk.Unirest.Net.request;
 
-namespace unirest_net.http
+namespace Fallk.Unirest.Net.Http
 {
     public static class HttpClientHelper
     {
@@ -16,12 +16,12 @@ namespace unirest_net.http
         private static HttpClient _sharedHttpClient;
 
         private static readonly object SyncRoot = new object();
-        
+
         private static HttpClient SharedClient
         {
             get
             {
-                lock(SyncRoot)
+                lock (SyncRoot)
                 {
                     if (_sharedHttpClient != null) return _sharedHttpClient;
                     _sharedHttpClient = new HttpClient {Timeout = ConnectionTimeout};
@@ -51,41 +51,27 @@ namespace unirest_net.http
         public static HttpResponse<T> Request<T>(HttpRequest request)
         {
             var responseTask = RequestHelper(request);
-            Task.WaitAll(responseTask);
-            var response = responseTask.Result;
-
-            return new HttpResponse<T>(response);
+            return new HttpResponse<T>(responseTask.GetAwaiter().GetResult());
         }
-        
+
         public static Task<HttpResponse<T>> RequestAsync<T>(HttpRequest request)
         {
             var responseTask = RequestHelper(request);
-            return Task<HttpResponse<T>>.Factory.StartNew(() =>
-            {
-                Task.WaitAll(responseTask);
-                return new HttpResponse<T>(responseTask.Result);
-            });
+            return Task.Run(() => new HttpResponse<T>(responseTask.GetAwaiter().GetResult()));
         }
 
         public static HttpResponse<T> RequestStream<T>(HttpRequest request)
         {
             var responseTask = RequestStreamHelper(request);
-            Task.WaitAll(responseTask);
-            var response = responseTask.Result;
-
-            return new HttpResponse<T>(response);
+            return new HttpResponse<T>(responseTask.GetAwaiter().GetResult());
         }
 
         public static Task<HttpResponse<T>> RequestStreamAsync<T>(HttpRequest request)
         {
             var responseTask = RequestStreamHelper(request);
-            return Task<HttpResponse<T>>.Factory.StartNew(() =>
-            {
-                Task.WaitAll(responseTask);
-                return new HttpResponse<T>(responseTask.Result);
-            });
+            return Task.Run(() => new HttpResponse<T>(responseTask.GetAwaiter().GetResult()));
         }
-        
+
         private static Task<HttpResponseMessage> RequestHelper(HttpRequest request)
         {
             //create http request
@@ -102,24 +88,20 @@ namespace unirest_net.http
 
         private static HttpRequestMessage PrepareRequest(HttpRequest request)
         {
-            if (!request.Headers.ContainsKey("user-agent"))
+            if (!request.Headers.ContainsKey("User-Agent"))
             {
-                request.Headers.Add("user-agent", UserAgent);
+                request.Headers.Add("User-Agent", UserAgent);
             }
 
             //create http request
             var msg = new HttpRequestMessage(request.HttpMethod, request.Url);
 
             //process basic authentication
-            if (request.NetworkCredentials != null)
+            var creds = request.NetworkCredentials;
+            if (creds != null)
             {
-                var authToken = Convert.ToBase64String(
-                                        Encoding.UTF8.GetBytes(
-                                            $"{request.NetworkCredentials.UserName}:{request.NetworkCredentials.Password}")
-                                    );
-
+                var authToken = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{creds.UserName}:{creds.Password}"));
                 var authValue = $"Basic {authToken}";
-
                 request.Headers.Add("Authorization", authValue);
             }
 
@@ -133,15 +115,15 @@ namespace unirest_net.http
             //append all headers
             foreach (var header in request.Headers)
             {
-                const string contentTypeKey = "Content-type";
-                if (header.Key.Equals(contentTypeKey, StringComparison.CurrentCultureIgnoreCase)&& msg.Content!=null)
+                const string contentTypeKey = "Content-Type";
+                if (header.Key.Equals(contentTypeKey, StringComparison.CurrentCultureIgnoreCase) && msg.Content != null)
                 {
                     msg.Content.Headers.Remove(contentTypeKey);
                     msg.Content.Headers.Add(contentTypeKey, header.Value);
                 }
                 else
                 {
-                    msg.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    msg.Headers.Add(header.Key, header.Value);
                 }
             }
 
