@@ -4,9 +4,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Fallk.Unirest.Net.Request;
+using HSNXT.Unirest.Net.Request;
 
-namespace Fallk.Unirest.Net.Http
+namespace HSNXT.Unirest.Net.Http
 {
     public static class HttpClientHelper
     {

@@ -1,12 +1,12 @@
 ﻿using System;
-using Fallk.Unirest.Net.Request;
+using HSNXT.Unirest.Net.Request;
 using System.Net.Http;
 using System.Web;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable MemberCanBeProtected.Global
 
-namespace Fallk.Unirest.Net.Unirest
+namespace HSNXT.Unirest.Net.Unirest
 {
     public class HttpRequestUrl : HttpRequest
     {

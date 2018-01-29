@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net.Http;
-using Fallk.Unirest.Net.Request;
-using Fallk.Unirest.Net.Unirest;
+using HSNXT.Unirest.Net.Request;
+using HSNXT.Unirest.Net.Unirest;
 
-namespace Fallk.Unirest.Net.Http
+namespace HSNXT.Unirest.Net.Http
 {
     public static class Unirest
     {

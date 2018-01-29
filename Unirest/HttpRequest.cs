@@ -6,12 +6,12 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Fallk.Unirest.Net.Http;
+using HSNXT.Unirest.Net.Http;
 using Newtonsoft.Json;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 
-namespace Fallk.Unirest.Net.Request
+namespace HSNXT.Unirest.Net.Request
 {
     public class HttpRequest
     {
