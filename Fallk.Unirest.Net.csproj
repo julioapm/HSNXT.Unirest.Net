@@ -1,10 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>HSNXT.Unirest.Net</PackageId>
+    <Company>uwx</Company>
+    <Description>A better REST library. Dead simple and efficient.</Description>
+    <AssemblyName>HSNXT.Unirest.Net</AssemblyName>
+    <RootNamespace>HSNXT.Unirest.Net</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="FluentAssertions" Version="4.19.4" />
     <PackageReference Include="Microsoft.VisualStudio.TestPlatform" Version="14.0.0.1" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(Appveyor_Build_Number)' == ''">
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <FileVersion>1.0.2</FileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Appveyor_Build_Number)' != ''">
+    <Version>1.0.$(Appveyor_Build_Number)</Version>
+    <AssemblyVersion>1.0.$(Appveyor_Build_Number)</AssemblyVersion>
+    <FileVersion>1.0.$(Appveyor_Build_Number)</FileVersion>
+  </PropertyGroup>
 </Project>
