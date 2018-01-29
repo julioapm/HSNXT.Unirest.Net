@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Http;
-using Fallk.Unirest.Net.request;
+using Fallk.Unirest.Net.Request;
 using Fallk.Unirest.Net.Unirest;
 
 namespace Fallk.Unirest.Net.Http

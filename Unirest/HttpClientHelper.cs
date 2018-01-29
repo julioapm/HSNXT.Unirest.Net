@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Fallk.Unirest.Net.request;
+using Fallk.Unirest.Net.Request;
 
 namespace Fallk.Unirest.Net.Http
 {

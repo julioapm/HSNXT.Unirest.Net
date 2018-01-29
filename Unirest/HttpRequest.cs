@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 
-namespace Fallk.Unirest.Net.request
+namespace Fallk.Unirest.Net.Request
 {
     public class HttpRequest
     {
