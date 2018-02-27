@@ -53,6 +53,7 @@ namespace HSNXT.Unirest.Net.Request
         /// Shortcut to <see cref="SetFields"/> or individual <see cref="SetField(string,object)"/> calls
         /// (use object initializer)
         /// </summary>
+        // ReSharper disable once CollectionNeverQueried.Global
         public FieldsDict Fields { get; }
 
         /// <summary>

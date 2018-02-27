@@ -12,41 +12,13 @@ namespace HSNXT.Unirest.Net.Http
     {
         private const string UserAgent = "unirest.net";
 
-        //singleton access to HttpClient
-        private static HttpClient _sharedHttpClient;
-
-        private static readonly object SyncRoot = new object();
-
-        private static HttpClient SharedClient
-        {
-            get
-            {
-                lock (SyncRoot)
-                {
-                    if (_sharedHttpClient != null) return _sharedHttpClient;
-                    _sharedHttpClient = new HttpClient {Timeout = ConnectionTimeout};
-                    return _sharedHttpClient;
-                }
-            }
-        }
-
         /// <summary>
         /// Use this timeout value unless request specifies its own value for timeout
         /// Throws System.Threading.Tasks.TaskCanceledException when timeout
         /// </summary>
         public static TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMinutes(10);
 
-        /// <summary>
-        /// Do not dispose HttpClient upon every http request.
-        /// This method should be called upon end of application execution.
-        /// </summary>
-        public static void Shutdown()
-        {
-            lock (SyncRoot)
-            {
-                _sharedHttpClient?.Dispose();
-            }
-        }
+        private static HttpClient SharedClient { get; } = new HttpClient {Timeout = ConnectionTimeout};
 
         public static HttpResponse<T> Request<T>(HttpRequest request)
         {

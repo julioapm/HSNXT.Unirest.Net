@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using HSNXT.Unirest.Net.Request;
 using System.Net.Http;
 using System.Web;
@@ -14,6 +15,7 @@ namespace HSNXT.Unirest.Net.Unirest
         /// Shortcut to <see cref="HttpRequest.SetFields"/> or individual <see cref="SetField(string,object)"/> calls
         /// (use object initializer)
         /// </summary>
+        // ReSharper disable once CollectionNeverQueried.Global
         public new FieldsDictUrl Fields { get; }
         
         private bool HasFirstField { get; set; }
@@ -22,13 +24,10 @@ namespace HSNXT.Unirest.Net.Unirest
         private string UrlStringCached { get; set; }
         
         private Uri UrlCached { get; set; }
-        
+
         public bool EncodeSpaceAsPlusSign { get; set; }
         
-        public override Uri Url
-        {
-            get => TryCreateUrl(UrlString);
-        }
+        public override Uri Url => TryCreateUrl(UrlString);
 
         private Uri TryCreateUrl(string url)
         {
@@ -81,7 +80,7 @@ namespace HSNXT.Unirest.Net.Unirest
         }
     }
 
-    public class FieldsDictUrl : FieldsDict
+    public class FieldsDictUrl : Dictionary<string, object>
     {
         private HttpRequestUrl Request { get; }
         
@@ -95,7 +94,7 @@ namespace HSNXT.Unirest.Net.Unirest
             }
         }
         
-        public FieldsDictUrl(HttpRequestUrl mast) : base(null)
+        public FieldsDictUrl(HttpRequestUrl mast)
         {
             Request = mast;
         }
