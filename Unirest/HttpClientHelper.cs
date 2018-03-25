@@ -26,10 +26,9 @@ namespace HSNXT.Unirest.Net.Http
             return new HttpResponse<T>(responseTask.GetAwaiter().GetResult());
         }
 
-        public static Task<HttpResponse<T>> RequestAsync<T>(HttpRequest request)
+        public static async Task<HttpResponse<T>> RequestAsync<T>(HttpRequest request)
         {
-            var responseTask = RequestHelper(request);
-            return Task.Run(() => new HttpResponse<T>(responseTask.GetAwaiter().GetResult()));
+            return new HttpResponse<T>(await RequestHelper(request));
         }
 
         public static HttpResponse<T> RequestStream<T>(HttpRequest request)
@@ -38,10 +37,9 @@ namespace HSNXT.Unirest.Net.Http
             return new HttpResponse<T>(responseTask.GetAwaiter().GetResult());
         }
 
-        public static Task<HttpResponse<T>> RequestStreamAsync<T>(HttpRequest request)
+        public static async Task<HttpResponse<T>> RequestStreamAsync<T>(HttpRequest request)
         {
-            var responseTask = RequestStreamHelper(request);
-            return Task.Run(() => new HttpResponse<T>(responseTask.GetAwaiter().GetResult()));
+            return new HttpResponse<T>(await RequestStreamHelper(request));
         }
 
         private static Task<HttpResponseMessage> RequestHelper(HttpRequest request)
