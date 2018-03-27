@@ -22,24 +22,22 @@ namespace HSNXT.Unirest.Net.Http
 
         public static HttpResponse<T> Request<T>(HttpRequest request)
         {
-            var responseTask = RequestHelper(request);
-            return new HttpResponse<T>(responseTask.GetAwaiter().GetResult());
+            return HttpResponse<T>.Get(RequestHelper(request).GetAwaiter().GetResult());
         }
 
         public static async Task<HttpResponse<T>> RequestAsync<T>(HttpRequest request)
         {
-            return new HttpResponse<T>(await RequestHelper(request));
+            return await HttpResponse<T>.GetAsync(await RequestHelper(request));
         }
 
         public static HttpResponse<T> RequestStream<T>(HttpRequest request)
         {
-            var responseTask = RequestStreamHelper(request);
-            return new HttpResponse<T>(responseTask.GetAwaiter().GetResult());
+            return HttpResponse<T>.Get(RequestStreamHelper(request).GetAwaiter().GetResult());
         }
 
         public static async Task<HttpResponse<T>> RequestStreamAsync<T>(HttpRequest request)
         {
-            return new HttpResponse<T>(await RequestStreamHelper(request));
+            return await HttpResponse<T>.GetAsync(await RequestStreamHelper(request));
         }
 
         private static Task<HttpResponseMessage> RequestHelper(HttpRequest request)

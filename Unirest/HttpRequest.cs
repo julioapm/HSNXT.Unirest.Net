@@ -419,14 +419,14 @@ namespace HSNXT.Unirest.Net.Request
         {
             var stream = HttpClientHelper.RequestStream<Stream>(this);
             
-            return new HttpResponse<T>(stream.Code, stream.Headers, genFunc(stream.Body), stream.Raw);
+            return new HttpResponse<T>(stream, genFunc);
         }
 
         public async Task<HttpResponse<T>> AsAsync<T>(Func<Stream,T> genFunc)
         {
             var stream = await HttpClientHelper.RequestStreamAsync<Stream>(this);
-            
-            return new HttpResponse<T>(stream.Code, stream.Headers, genFunc(stream.Body), stream.Raw);
+
+            return new HttpResponse<T>(stream, genFunc);
         }
         
         private static bool IsPrimitiveType(object obj)
