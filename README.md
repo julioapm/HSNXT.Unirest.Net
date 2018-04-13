@@ -1,104 +1,107 @@
-# Unirest for .Net
+# HSNXT.Unirest.Net
 
-Unirest is a set of lightweight HTTP libraries available in multiple languages.
+Improved version of Kong's Unirest.Net library.
 
-This is a port of the Java library to .NET.
+This library fixes a couple problems and improves upon Kong's library:
+* Fixed methods not using proper C# code style
+* Added real async (async methods simply used GetResult, so they ran synchronously)
+* Added shared HttpClient (this can lead to running out of file descriptors)
+* Authentication support
+* Support for uploading files (multipart requests)
+* Ported to .NET Standard
+* Added support for OPTIONS, HEAD and TRACE methods
+* Added an object initializer-based pattern for creating requests
 
-## Installing
-Use nuget package manager to install the pre-release version of Unirest.
+Documentation is coming soon. In the meanwhile, you can use these test methods as reference:
+```cs
 
-```C#
-Install-Package Unirest-API -pre
-```
+        [TestMethod]
+        public void BasicTextTest()
+        {
+            new GetRequestUrl("http://localhost:8080/test/text").AsString().Body
+                .ShouldBeEquivalentTo("The quick brown fox jumps over the lazy dog");
+        }
+        
+        [TestMethod]
+        public async Task BasicTextTestAsync()
+        {
+            (await new GetRequestUrl("http://localhost:8080/test/text").AsStringAsync())
+                .Body
+                .ShouldBeEquivalentTo("The quick brown fox jumps over the lazy dog");
+        }
+        
+        [TestMethod]
+        public void ContentType()
+        {
+            new PostRequest("http://localhost:8080/test/content-type")
+                {
+                    Headers =
+                    {
+                        ContentType = "text/html; charset=utf-8"
+                    },
+                    BodyString = ExampleHtml
+                }.AsString().Body
+                .ShouldBeEquivalentTo("text/html; charset=utf-8");
+        }
+        
+        [TestMethod]
+        public void Accept()
+        {
+            new GetRequestUrl("http://localhost:8080/test/accept")
+                {
+                    Headers =
+                    {
+                        Accept = "application/json"
+                    }
+                }.AsString().Body
+                .ShouldBeEquivalentTo("application/json");
+        }
 
-## Creating Request
-So you're probably wondering how using Unirest makes creating requests in .NET easier, here is a basic POST request that will explain everything:
+        [TestMethod]
+        public void NoContentTypeInGet()
+        {
+            new Action(() =>
+            {
+                new GetRequestUrl("http://localhost:8080/test/accept")
+                {
+                    Headers =
+                    {
+                        ContentType = "text/html; charset=utf-8"
+                    }
+                }.AsString();
+            }).ShouldThrow<InvalidOperationException>();
+        }
 
-```C#
-HttpResponse<MyClass> jsonResponse = Unirest.post("http://httpbin.org/post")
-  .header("accept", "application/json")
-  .field("parameter", "value")
-  .field("foo", "bar")
-  .asJson<MyClass>();
-```
+        [TestMethod]
+        public void QueryParams1Entry()
+        {
+            new GetRequestUrl("http://localhost:8080/test/echo")
+                .SetField("key", "value")
+                .AsString().Body
+                .ShouldBeEquivalentTo("/test/echo?key=value");
+        }
 
-Requests are made when `as[Type]()` is invoked, possible types include `Json`, `Binary`, `String`. If the request supports this, a body  can be passed along with `.body(String)` or `body<T>(T)` to serialize an arbitary object to JSON. If you already have a dictionary of parameters or do not wish to use seperate field methods for each one there is a `.fields(Dictionary<string, object> parameters)` method that will serialize each key - value to form parameters on your request.
-
-`.headers(Dictionary<string, string> headers)` is also supported in replacement of multiple header methods.
-
-## Asynchronous Requests
-Sometimes, well most of the time, you want your application to be asynchronous and not block, Unirest supports this in .NET with the TPL pattern and async/await:
-
-```C#
-Task<HttpResponse<MyClass>> myClassTask = Unirest.post("http://httpbin.org/post")
-  .header("accept", "application/json")
-  .field("param1", "value1")
-  .field("param2", "value2")
-  .asJsonAsync<MyClass>();
-```
-
-## File Uploads
-Creating `multipart` requests with .NET is trivial, simply pass along a `Stream` Object as a field:
-
-```C#
-byte[] data = File.ReadAllBytes(@"filePath");
-HttpResponse<MyClass> myClass = Unirest.post("http://httpbin.org/post")
-  .header("accept", "application/json")
-  .field("parameter", "value")
-  .field("files", data)
-  .asJson<MyClass>();
-```
-
-## Custom Entity Body
-
-```C#
-HttpResponse<MyClass> myClass = Unirest.post("http://httpbin.org/post")
-  .header("accept", "application/json")
-  .body("{\"parameter\":\"value\", \"foo\":\"bar\"}")
-  .asJson<MyClass>();
-```
-
-# Request
-
-The .NET Unirest library follows the builder style conventions. You start building your request by creating a `HttpRequest` object using one of the following:
-
-```C#
-HttpRequest request = Unirest.get(String url);
-HttpRequest request = Unirest.post(String url);
-HttpRequest request = Unirest.put(String url);
-HttpRequest request = Unirest.patch(String url);
-HttpRequest request = Unirest.delete(String url);
-```
-
-# Response
-
-Upon recieving a response Unirest returns the result in the form of an Object, this object should always have the same keys for each language regarding to the response details.
-
-- `.Code` - HTTP Response Status Code (Example 200)
-- `.Headers` - HTTP Response Headers
-- `.Body` - Parsed response body where applicable, for example JSON responses are parsed to Objects / Associative Arrays.
-- `.Raw` - Un-parsed response body
-
-# Basic Authentication
-
-The .NET Unirest library has built-in support for basic authentication. You can append your credentials with your request as follows.
-
-```C#
-HttpResponse<MyClass> myClass = Unirest.post("http://httpbin.org/post")
-  .header("accept", "application/json")
-  .field("parameter", "value")
-  .basicAuth("username", "password")
-  .asJson<MyClass>();
-```
-
-# Advanced Authentication using Filter
-
-This library supports message filter for outgoing http messages. This functionality can be used for manipulating outgoing request. A usecase for this feature is to use external authentication handlers for advanced authentication process such as the various flows of oAuth. You can set an authentication filter that is invoked before making a request and thus any additional credentials or headers can be appended. See uniauth on github (https://github.com/zeeshanejaz/uniauth-net) for a compatible authentication filter.
-
-```C#
-HttpResponse<MyClass> myClass = Unirest.post("http://httpbin.org/post")
-  .header("accept", "application/json")
-  .field("parameter", "value")
-  .filter(Func<HttpRequestMessage, bool> filter)
-  .asJson<MyClass>();
+        [TestMethod]
+        public void QueryParams2Entry()
+        {
+            new GetRequestUrl("http://localhost:8080/test/echo")
+                .SetField("key", "value")
+                .SetField("key2", "value2")
+                .AsString().Body
+                .ShouldBeEquivalentTo("/test/echo?key=value&key2=value2");
+        }
+        
+        [TestMethod]
+        public void QueryParams2RandomObjects()
+        {
+            new GetRequestUrl("http://localhost:8080/test/echo")
+                .SetField("key", typeof(TestMethodAttribute))
+                .SetField("key2", new object())
+                .SetField("key3", null)
+                .AsString().Body
+                .ShouldBeEquivalentTo("/test/echo" +
+                                      "?key=Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute" +
+                                      "&key2=System.Object" +
+                                      "&key3=null");
+        }
 ```
