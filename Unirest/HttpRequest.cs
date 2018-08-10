@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using HSNXT.Unirest.Net.Http;
+using HSNXT.Unirest.Net.Unirest;
 using Newtonsoft.Json;
 
 // ReSharper disable UnusedMethodReturnValue.Global
@@ -121,6 +122,13 @@ namespace HSNXT.Unirest.Net.Request
                 NetworkCredentials = new NetworkCredential(value.Item1, value.Item2);
             }
         }
+
+        /// <summary>
+        /// Whether to throw a <see cref="UnirestResponseException{T}"/> if the response headers contain a non-success
+        /// status code, as defined by <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>. The
+        /// exception is only thrown when callbacks aren't provided to any of the <c>As...</c> methods.
+        /// </summary>
+        public bool EnsureSuccess { get; set; }
 
         // Should add overload that takes URL object
         public HttpRequest(HttpMethod method, string url)
@@ -364,69 +372,272 @@ namespace HSNXT.Unirest.Net.Request
                 throw new InvalidOperationException("Can't add explicit body to request with fields");
             }
 
-            if (body == null)
-                return this;
-
-            if (body is Stream)
+            switch (body)
             {
-                var inputStream = body as Stream;
-                if (!inputStream.CanRead)
-                    throw new ArgumentException("Excepting a readable stream");
+                case null:
+                    return this;
+                case string str:
+                    Body = new StringContent(str);
+                    break;
+                case Stream stream:
+                    if (!stream.CanRead)
+                        throw new ArgumentException("Excepting a readable stream");
 
-                var reader = new StreamReader(inputStream);
-                var fileContent = reader.ReadToEnd();
-                Body = new MultipartFormDataContent { new StringContent(fileContent) };
-            }
-            else
-            {
-                Body = new StringContent(JsonConvert.SerializeObject(body));
+                    var reader = new StreamReader(stream);
+                    var fileContent = reader.ReadToEnd();
+                    Body = new MultipartFormDataContent { new StringContent(fileContent) };
+                    break;
+                default:
+                    Body = new StringContent(JsonConvert.SerializeObject(body));
+                    break;
             }
 
             _hasExplicitBody = true;
             return this;
         }
 
-        public HttpResponse<string> AsString()
+        /// <summary>
+        /// Sends this request and call one of the callbacks with a string containing the response's raw body.
+        /// 
+        /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
+        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// otherwise.</p>
+        /// </summary>
+        /// <param name="onSuccess">The callback to be called if the request succeeds</param>
+        /// <param name="onFail">The callback to be called if the request fails</param>
+        /// <returns>A task that resolves when either <paramref name="onSuccess"/> or <paramref name="onFail"/>
+        /// have resolved.</returns>
+        public Task AsStringAsync(OnSuccessAsync<string> onSuccess, OnFailAsync<string> onFail)
         {
-            return HttpClientHelper.Request<string>(this);
+            if (onSuccess == null) throw new ArgumentNullException(nameof(onSuccess));
+            if (onFail == null) throw new ArgumentNullException(nameof(onFail));
+            
+            return HttpClientHelper.RequestAsync(this, onSuccess, onFail);
         }
 
+        /// <summary>
+        /// Sends this request and call one of the callbacks with a <see cref="Stream"/> of the HTTP response body.
+        /// 
+        /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
+        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// otherwise.</p>
+        /// </summary>
+        /// <param name="onSuccess">The callback to be called if the request succeeds</param>
+        /// <param name="onFail">The callback to be called if the request fails</param>
+        /// <returns>A task that resolves when either <paramref name="onSuccess"/> or <paramref name="onFail"/>
+        /// have resolved.</returns>
+        public Task AsBinaryAsync(OnSuccessAsync<Stream> onSuccess, OnFailAsync<Stream> onFail)
+        {
+            if (onSuccess == null) throw new ArgumentNullException(nameof(onSuccess));
+            if (onFail == null) throw new ArgumentNullException(nameof(onFail));
+            
+            return HttpClientHelper.RequestStreamAsync(this, onSuccess, onFail);
+        }
+
+        /// <summary>
+        /// Sends this request and call one of the callbacks with an array of bytes containing the response's raw body.
+        /// 
+        /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
+        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// otherwise.</p>
+        /// </summary>
+        /// <param name="onSuccess">The callback to be called if the request succeeds</param>
+        /// <param name="onFail">The callback to be called if the request fails</param>
+        /// <returns>A task that resolves when either <paramref name="onSuccess"/> or <paramref name="onFail"/>
+        /// have resolved.</returns>
+        public Task AsByteArrayAsync(OnSuccessAsync<string> onSuccess, OnFailAsync<string> onFail)
+        {
+            if (onSuccess == null) throw new ArgumentNullException(nameof(onSuccess));
+            if (onFail == null) throw new ArgumentNullException(nameof(onFail));
+            
+            return HttpClientHelper.RequestAsync(this, onSuccess, onFail);
+        }
+
+        /// <summary>
+        /// Send this request and call one of the callbacks with an instance of type <typeparamref name="T"/> according
+        /// to a few rules:
+        ///
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>
+        ///             If <typeparamref name="T"/> is <c>string</c>, call with the content of the response as a
+        ///             string
+        ///         </description>  
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             If <typeparamref name="T"/> is <c>byte[]</c>, call with the raw response as an array of bytes
+        ///         </description>  
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             If <typeparamref name="T"/>is <see cref="Stream"/>, call with a clone of the raw contents of
+        ///             the response as a <see cref="Stream"/> (this is different from the <see cref="AsBinaryAsync()"/>
+        ///             variant as it makes a memory copy of the contents after the request finishes, rather than
+        ///             resolving to the response's HTTP stream while in transit)
+        ///         </description>  
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             If none of the conditions apply, call with an instance by deserializing the response text with
+        ///             <see cref="JsonConvert.DeserializeObject{T}(string)"/>.
+        ///         </description>  
+        ///     </item>
+        /// </list>
+        /// 
+        /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
+        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// otherwise.</p>
+        /// </summary>
+        /// <typeparam name="T">The type of the response body, can be a JSON-deserializable object, <c>string</c>,
+        /// <c>byte[]</c> or a <see cref="Stream"/></typeparam>
+        /// <param name="onSuccess">The callback to be called if the request succeeds</param>
+        /// <param name="onFail">The callback to be called if the request fails</param>
+        /// <returns>A task that resolves when either <paramref name="onSuccess"/> or <paramref name="onFail"/>
+        /// have resolved.</returns>
+        public Task AsJsonAsync<T>(OnSuccessAsync<T> onSuccess, OnFailAsync<T> onFail)
+        {
+            if (onSuccess == null) throw new ArgumentNullException(nameof(onSuccess));
+            if (onFail == null) throw new ArgumentNullException(nameof(onFail));
+            
+            return HttpClientHelper.RequestAsync(this, onSuccess, onFail);
+        }
+
+        /// <summary>
+        /// Sends this request and call one of the callbacks with an instance of type <typeparamref name="T"/> by
+        /// passing the response's data as a <see cref="Stream"/> to the generator function
+        /// <paramref name="generator"/>.
+        /// 
+        /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
+        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// otherwise.</p>
+        /// </summary>
+        /// <param name="generator">The generator function. Takes the HTTP response as a stream and should output an
+        /// object of type <typeparamref name="T"/>. Exceptions thrown inside the generator function will be bubbled up
+        /// the call stack.</param>
+        /// <param name="onSuccess">The callback to be called if the request succeeds</param>
+        /// <param name="onFail">The callback to be called if the request fails</param>
+        /// <returns>A task that resolves when either <paramref name="onSuccess"/> or <paramref name="onFail"/>
+        /// have resolved.</returns>
+        public Task AsAsync<T>(Func<Stream, T> generator, OnSuccessAsync<T> onSuccess, OnFailAsync<Stream> onFail)
+        {
+            return HttpClientHelper.RequestStreamAsync(this, s => onSuccess(generator(s)), onFail);
+        }
+
+        /// <summary>
+        /// Sends this request and call one of the callbacks with an instance of type <typeparamref name="T"/> by
+        /// passing the response's data as a <see cref="Stream"/> to the generator function
+        /// <paramref name="generator"/>.
+        /// 
+        /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
+        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// otherwise.</p>
+        /// </summary>
+        /// <param name="generator">The generator function. Takes the HTTP response as a stream and should output an
+        /// object of type <typeparamref name="T"/>. Exceptions thrown inside the generator function will be bubbled up
+        /// the call stack.</param>
+        /// <param name="onSuccess">The callback to be called if the request succeeds</param>
+        /// <param name="onFail">The callback to be called if the request fails</param>
+        /// <returns>A task that resolves when either <paramref name="onSuccess"/> or <paramref name="onFail"/>
+        /// have resolved.</returns>
+        public Task AsAsync<T>(Func<Stream, Task<T>> generator, OnSuccessAsync<T> onSuccess, OnFailAsync<Stream> onFail)
+        {
+            return HttpClientHelper.RequestStreamAsync(this, async s => await onSuccess(await generator(s)), onFail);
+        }
+
+        /// <summary>
+        /// Sends this request and resolve to a string containing the response's raw body.
+        /// </summary>
+        /// <returns>A task that resolves to an <see cref="HttpResponse{T}"/> object containing the response body as a
+        /// string.</returns>
         public Task<HttpResponse<string>> AsStringAsync()
         {
             return HttpClientHelper.RequestAsync<string>(this);
         }
 
-        public HttpResponse<Stream> AsBinary()
-        {
-            return HttpClientHelper.RequestStream<Stream>(this);
-        }
-
+        /// <summary>
+        /// Sends this request and resolve to a <see cref="Stream"/> of the HTTP response body.
+        /// </summary>
+        /// <returns>A task that resolves to an <see cref="HttpResponse{T}"/> object containing the response stream as
+        /// an array of bytes.</returns>
         public Task<HttpResponse<Stream>> AsBinaryAsync()
         {
-            return HttpClientHelper.RequestStreamAsync<Stream>(this);
+            return HttpClientHelper.RequestStreamAsync(this);
         }
 
-        public HttpResponse<T> AsJson<T>()
+        /// <summary>
+        /// Sends this request and resolve to an array of bytes containing the response's raw body.
+        /// </summary>
+        /// <returns>A task that resolves to an <see cref="HttpResponse{T}"/> object containing the response body as an
+        /// array of bytes.</returns>
+        public Task<HttpResponse<byte[]>> AsByteArrayAsync()
         {
-            return HttpClientHelper.Request<T>(this);
+            return HttpClientHelper.RequestAsync<byte[]>(this);
         }
-
+        
+        /// <summary>
+        /// Send this request and resolve to an instance of type <typeparamref name="T"/> according to a few rules:
+        ///
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>
+        ///             If <typeparamref name="T"/> is <c>string</c>, resolve to the content of the response as a
+        ///             string
+        ///         </description>  
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             If <typeparamref name="T"/> is <c>byte[]</c>, resolve to the raw response as an array of bytes
+        ///         </description>  
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             If <typeparamref name="T"/>is <see cref="Stream"/>, resolve to a clone of the raw contents of
+        ///             the response as a <see cref="Stream"/> (this is different from the <see cref="AsBinaryAsync()"/>
+        ///             variant as it makes a memory copy of the contents after the request finishes, rather than
+        ///             resolving to the response's HTTP stream while in transit)
+        ///         </description>  
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             If none of the conditions apply, resolve to an instance by deserializing the response text with
+        ///             <see cref="JsonConvert.DeserializeObject{T}(string)"/>.
+        ///         </description>  
+        ///     </item>
+        /// </list>
+        /// 
+        /// </summary>
+        /// <typeparam name="T">The type of the response body, can be a JSON-deserializable object, <c>string</c>,
+        /// <c>byte[]</c> or a <see cref="Stream"/></typeparam>
+        /// <returns>A task that resolves to an <see cref="HttpResponse{T}"/> object containing the response body.</returns>
+        /// <remarks>
+        /// This overload may cause a misleading error (likely <see cref="JsonSerializationException"/>) if
+        /// <see cref="EnsureSuccess"/> is not true (the default) when the request fails and the response data cannot be
+        /// converted from JSON to type <typeparamref name="T"/>. To get a more clear exception, set
+        /// <see cref="EnsureSuccess"/> to true; To handle failed requests without throwing an exception, use 
+        /// <see cref="AsJsonAsync{T}(OnSuccessAsync{T},OnFailAsync{T})"/>.
+        /// </remarks>
         public Task<HttpResponse<T>> AsJsonAsync<T>()
         {
             return HttpClientHelper.RequestAsync<T>(this);
         }
-        public HttpResponse<T> As<T>(Func<Stream,T> genFunc)
+        
+        // TODO there is no Func<Stream, Task<T>> equivalent for this overload
+        /// <summary>
+        /// Send this request and resolve to an instance of type <typeparamref name="T"/> by passing the response's data
+        /// as a <see cref="Stream"/> to the generator function <paramref name="generator"/>.
+        /// </summary>
+        /// <param name="generator">The generator function. Takes the HTTP response as a stream and should output an
+        /// object of type <typeparamref name="T"/>. Exceptions thrown inside the generator function will be bubbled up
+        /// the call stack.</param>
+        /// <typeparam name="T">The type of the response body that the generator function should output</typeparam>
+        /// <returns>A task that resolves to an <see cref="HttpResponse{T}"/> object containing the response body's
+        /// result after passing it to the generator function.</returns>
+        public async Task<HttpResponse<T>> AsAsync<T>(Func<Stream, T> generator)
         {
-            var stream = HttpClientHelper.RequestStream<Stream>(this);
-            
-            return new HttpResponse<T>(stream, genFunc);
-        }
+            var stream = await HttpClientHelper.RequestStreamAsync(this);
 
-        public async Task<HttpResponse<T>> AsAsync<T>(Func<Stream,T> genFunc)
-        {
-            var stream = await HttpClientHelper.RequestStreamAsync<Stream>(this);
-
-            return new HttpResponse<T>(stream, genFunc);
+            return new HttpResponse<T>(stream, generator);
         }
         
         private static bool IsPrimitiveType(object obj)
@@ -627,9 +838,9 @@ namespace HSNXT.Unirest.Net.Request
         #endregion
         
         #if DEBUG
-        public static void Btesta()
+        public static async void Btesta()
         {
-            var b = new GetRequest("")
+            var b = await new GetRequest("")
             {
                 Fields =
                 {
@@ -641,7 +852,7 @@ namespace HSNXT.Unirest.Net.Request
                     [""] = "",
                     DNT = "1",
                 }
-            }.AsBinary();
+            }.AsBinaryAsync();
         }
         #endif
     }

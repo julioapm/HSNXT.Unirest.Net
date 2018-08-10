@@ -5,10 +5,11 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using HSNXT.Unirest.Net.Request;
+using HSNXT.Unirest.Net.Unirest;
 
 namespace HSNXT.Unirest.Net.Http
 {
-    public static class HttpClientHelper
+    internal static class HttpClientHelper
     {
         private const string UserAgent = "unirest.net";
 
@@ -20,24 +21,16 @@ namespace HSNXT.Unirest.Net.Http
 
         private static HttpClient SharedClient { get; } = new HttpClient {Timeout = ConnectionTimeout};
 
-        public static HttpResponse<T> Request<T>(HttpRequest request)
+        public static async Task<HttpResponse<T>> RequestAsync<T>(HttpRequest request,
+            OnSuccessAsync<T> onSuccess = null, OnFailAsync<T> onFail = null)
         {
-            return HttpResponse<T>.Get(RequestHelper(request).GetAwaiter().GetResult());
+            return await HttpResponse<T>.GetAsync(await RequestHelper(request), request.EnsureSuccess, onSuccess, onFail);
         }
 
-        public static async Task<HttpResponse<T>> RequestAsync<T>(HttpRequest request)
+        public static async Task<HttpResponse<Stream>> RequestStreamAsync(HttpRequest request,
+            OnSuccessAsync<Stream> onSuccess = null, OnFailAsync<Stream> onFail = null)
         {
-            return await HttpResponse<T>.GetAsync(await RequestHelper(request));
-        }
-
-        public static HttpResponse<T> RequestStream<T>(HttpRequest request)
-        {
-            return HttpResponse<T>.Get(RequestStreamHelper(request).GetAwaiter().GetResult());
-        }
-
-        public static async Task<HttpResponse<T>> RequestStreamAsync<T>(HttpRequest request)
-        {
-            return await HttpResponse<T>.GetAsync(await RequestStreamHelper(request));
+            return await HttpResponse<Stream>.GetAsync(await RequestStreamHelper(request), request.EnsureSuccess, onSuccess, onFail);
         }
 
         private static Task<HttpResponseMessage> RequestHelper(HttpRequest request)
