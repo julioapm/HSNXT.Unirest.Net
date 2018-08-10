@@ -1,4 +1,4 @@
-# HSNXT.Unirest.Net
+# HSNXT.Unirest.Net [![Build status](https://ci.appveyor.com/api/projects/status/m3x5npeqilbhr3ru/branch/master?svg=true)](https://ci.appveyor.com/project/uwx/hsnxt-unirest-net/branch/master)
 
 Improved version of Kong's Unirest.Net library.
 
