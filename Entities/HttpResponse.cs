@@ -16,7 +16,8 @@ namespace HSNXT.Unirest.Net.Entities
     /// <typeparam name="T">The type of the response body.</typeparam>
     /// <remarks>An <see cref="HttpResponse{T}"/> object only needs to be disposed if <typeparamref name="T"/> is
     /// <see cref="Stream"/> and calls to the respective method aren't using callbacks; in other situations, the
-    /// response is buffered ahead of time and disposed automatically.</remarks>
+    /// response is either buffered ahead of time and disposed automatically, or disposed after the callback finishes
+    /// executing.</remarks>
     public class HttpResponse<T> : BaseHttpResponse, IDisposable
     {
         // response to get rid of (null unless T is Stream)
