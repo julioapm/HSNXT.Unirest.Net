@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 
-namespace HSNXT.Unirest.Net.Http
+namespace HSNXT.Unirest.Net.Entities
 {
     public class BaseHttpResponse
     {

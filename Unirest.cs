@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net.Http;
-using HSNXT.Unirest.Net.Request;
-using HSNXT.Unirest.Net.Unirest;
+using HSNXT.Unirest.Net.Internals;
 
-namespace HSNXT.Unirest.Net.Http
+namespace HSNXT.Unirest.Net
 {
     public static class Unirest
     {

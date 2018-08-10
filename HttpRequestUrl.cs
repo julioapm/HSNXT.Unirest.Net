@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using HSNXT.Unirest.Net.Request;
 using System.Net.Http;
 using System.Web;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable MemberCanBeProtected.Global
 
-namespace HSNXT.Unirest.Net.Unirest
+namespace HSNXT.Unirest.Net
 {
     public class HttpRequestUrl : HttpRequest
     {

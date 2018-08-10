@@ -4,10 +4,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using HSNXT.Unirest.Net.Request;
-using HSNXT.Unirest.Net.Unirest;
+using HSNXT.Unirest.Net.Entities;
 
-namespace HSNXT.Unirest.Net.Http
+namespace HSNXT.Unirest.Net.Internals
 {
     internal static class HttpClientHelper
     {

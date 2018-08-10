@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HSNXT.Unirest.Net.Http
+namespace HSNXT.Unirest.Net.Entities.Exceptions
 {
     /// <inheritdoc cref="System.Exception" />
     /// <summary>

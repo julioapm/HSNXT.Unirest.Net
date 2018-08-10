@@ -2,9 +2,10 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using HSNXT.Unirest.Net.Entities.Exceptions;
 using Newtonsoft.Json;
 
-namespace HSNXT.Unirest.Net.Http
+namespace HSNXT.Unirest.Net.Entities
 {
     /// <inheritdoc cref="System.IDisposable" />
     /// <summary>

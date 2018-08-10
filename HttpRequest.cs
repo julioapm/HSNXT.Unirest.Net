@@ -6,13 +6,14 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using HSNXT.Unirest.Net.Http;
-using HSNXT.Unirest.Net.Unirest;
+using HSNXT.Unirest.Net.Entities;
+using HSNXT.Unirest.Net.Entities.Exceptions;
+using HSNXT.Unirest.Net.Internals;
 using Newtonsoft.Json;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 
-namespace HSNXT.Unirest.Net.Request
+namespace HSNXT.Unirest.Net
 {
     public class HttpRequest
     {
