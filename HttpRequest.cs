@@ -125,7 +125,7 @@ namespace HSNXT.Unirest.Net.Request
 
         /// <summary>
         /// Whether to throw a <see cref="UnirestResponseException{T}"/> if the response headers contain a non-success
-        /// status code, as defined by <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>. The
+        /// status code, as defined by <see cref="BaseHttpResponse"/>.<see cref="BaseHttpResponse.IsSuccess"/>. The
         /// exception is only thrown when callbacks aren't provided to any of the <c>As...</c> methods.
         /// </summary>
         public bool EnsureSuccess { get; set; }
@@ -400,7 +400,7 @@ namespace HSNXT.Unirest.Net.Request
         /// Sends this request and call one of the callbacks with a string containing the response's raw body.
         /// 
         /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
-        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// <see cref="BaseHttpResponse"/>.<see cref="BaseHttpResponse.IsSuccess"/>, <paramref name="onFail"/> is called
         /// otherwise.</p>
         /// </summary>
         /// <param name="onSuccess">The callback to be called if the request succeeds</param>
@@ -419,7 +419,7 @@ namespace HSNXT.Unirest.Net.Request
         /// Sends this request and call one of the callbacks with a <see cref="Stream"/> of the HTTP response body.
         /// 
         /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
-        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// <see cref="BaseHttpResponse"/>.<see cref="BaseHttpResponse.IsSuccess"/>, <paramref name="onFail"/> is called
         /// otherwise.</p>
         /// </summary>
         /// <param name="onSuccess">The callback to be called if the request succeeds</param>
@@ -438,7 +438,7 @@ namespace HSNXT.Unirest.Net.Request
         /// Sends this request and call one of the callbacks with an array of bytes containing the response's raw body.
         /// 
         /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
-        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// <see cref="BaseHttpResponse"/>.<see cref="BaseHttpResponse.IsSuccess"/>, <paramref name="onFail"/> is called
         /// otherwise.</p>
         /// </summary>
         /// <param name="onSuccess">The callback to be called if the request succeeds</param>
@@ -486,7 +486,7 @@ namespace HSNXT.Unirest.Net.Request
         /// </list>
         /// 
         /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
-        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// <see cref="BaseHttpResponse"/>.<see cref="BaseHttpResponse.IsSuccess"/>, <paramref name="onFail"/> is called
         /// otherwise.</p>
         /// </summary>
         /// <typeparam name="T">The type of the response body, can be a JSON-deserializable object, <c>string</c>,
@@ -509,7 +509,7 @@ namespace HSNXT.Unirest.Net.Request
         /// <paramref name="generator"/>.
         /// 
         /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
-        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// <see cref="BaseHttpResponse"/>.<see cref="BaseHttpResponse.IsSuccess"/>, <paramref name="onFail"/> is called
         /// otherwise.</p>
         /// </summary>
         /// <param name="generator">The generator function. Takes the HTTP response as a stream and should output an
@@ -530,7 +530,7 @@ namespace HSNXT.Unirest.Net.Request
         /// <paramref name="generator"/>.
         /// 
         /// <p><paramref name="onSuccess"/> is called if the request succeeds as defined by
-        /// <see cref="HttpResponseBase"/>.<see cref="HttpResponseBase.IsSuccess"/>, <paramref name="onFail"/> is called
+        /// <see cref="BaseHttpResponse"/>.<see cref="BaseHttpResponse.IsSuccess"/>, <paramref name="onFail"/> is called
         /// otherwise.</p>
         /// </summary>
         /// <param name="generator">The generator function. Takes the HTTP response as a stream and should output an
