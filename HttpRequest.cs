@@ -372,10 +372,11 @@ namespace HSNXT.Unirest.Net.Request
                 throw new InvalidOperationException("Can't add explicit body to request with fields");
             }
 
+            if (ReferenceEquals(body, null))
+                return this;
+
             switch (body)
             {
-                case null:
-                    return this;
                 case string str:
                     Body = new StringContent(str);
                     break;
