@@ -104,7 +104,9 @@ namespace HSNXT.Unirest.Net.Entities
 
                 if (ensureSuccess)
                 {
-                    throw new UnirestResponseException<T>(new PartialHttpResponse<T>(res, response));
+                    throw new UnirestResponseException<T>(
+                        $"Request failed with status code {res.Code} ({res.CodeType})", 
+                        new PartialHttpResponse<T>(res, response));
                 }
             }
 

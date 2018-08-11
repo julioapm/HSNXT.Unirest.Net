@@ -17,7 +17,7 @@ namespace HSNXT.Unirest.Net.Entities.Exceptions
         /// </summary>
         public PartialHttpResponse<T> PartialResponse { get; }
         
-        internal UnirestResponseException(PartialHttpResponse<T> partialResponse)
+        internal UnirestResponseException(string message, PartialHttpResponse<T> partialResponse) : base(message)
         {
             PartialResponse = partialResponse;
         }
