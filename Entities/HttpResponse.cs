@@ -71,6 +71,8 @@ namespace HSNXT.Unirest.Net.Entities
                 // handler, so don't dispose it in that case
                 else if (!ensureSuccess)
                 {
+                    // Content is automatically disposed, see
+                    // dotnet/corefx/blob/8c0487bfeff9229beca93dc480028b83d8e39705/src/System.Net.Http/src/System/Net/Http/HttpResponseMessage.cs#L213
                     response.Dispose();
                 }
             }
@@ -90,7 +92,7 @@ namespace HSNXT.Unirest.Net.Entities
             {
                 if (onFail != null)
                 {
-                    await onFail(new PartialHttpResponse<T>(res, content));
+                    await onFail(new PartialHttpResponse<T>(res, response));
 
                     // we return here to avoid misleading exceptions after executing code when onFail is present; since
                     // onFinish must also be present we shouldn't "bubble up" the result to the outside, as that voids
@@ -102,7 +104,7 @@ namespace HSNXT.Unirest.Net.Entities
 
                 if (ensureSuccess)
                 {
-                    throw new UnirestResponseException<T>(new PartialHttpResponse<T>(res, content));
+                    throw new UnirestResponseException<T>(new PartialHttpResponse<T>(res, response));
                 }
             }
 

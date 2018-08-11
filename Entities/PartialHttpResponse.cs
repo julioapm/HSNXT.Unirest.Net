@@ -18,12 +18,15 @@ namespace HSNXT.Unirest.Net.Entities
     /// <typeparam name="T">The original target response type, which a failed response needn't conform to</typeparam>
     public class PartialHttpResponse<T> : BaseHttpResponse, IDisposable
     {
-        private HttpContent Content { get; }
+        // there is no real benefit to this being a property with value, see
+        // dotnet/corefx/blob/8c0487bfeff9229beca93dc480028b83d8e39705/src/System.Net.Http/src/System/Net/Http/HttpResponseMessage.cs#L43
+        private HttpContent Content => ResponseMessage.Content;
+        private HttpResponseMessage ResponseMessage { get; }
 
-        internal PartialHttpResponse(BaseHttpResponse existing, HttpContent content)
+        internal PartialHttpResponse(BaseHttpResponse existing, HttpResponseMessage response)
             : base(existing.Headers, existing.CodeType, false)
         {
-            Content = content;
+            ResponseMessage = response;
         }
 
         /// <summary>
@@ -64,6 +67,11 @@ namespace HSNXT.Unirest.Net.Entities
         /// <returns>A Task resolving to this response's body's raw data as a <see cref="Stream"/>.</returns>
         public Task<Stream> AsStreamAsync() => Content.ReadAsStreamAsync();
 
-        public void Dispose() => Content?.Dispose();
+        public void Dispose()
+        {
+            // theoretically we only need to dispose of HttpContent, but i'm paranoid so we're disposing of the entire
+            // HttpResponseMessage, which will also dispose Content.
+            ResponseMessage?.Dispose();
+        }
     }
 }
