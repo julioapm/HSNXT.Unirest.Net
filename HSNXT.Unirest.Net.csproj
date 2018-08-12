@@ -1,11 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageId>HSNXT.Unirest.Net</PackageId>
     <Company>uwx</Company>
     <Description>A better REST library. Dead simple and efficient.</Description>
-    <AssemblyName>HSNXT.Unirest.Net</AssemblyName>
-    <RootNamespace>HSNXT.Unirest.Net</RootNamespace>
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
