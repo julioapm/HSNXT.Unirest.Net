@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using HSNXT.Unirest.Net.Entities;
 using HSNXT.Unirest.Net.Internals;
 
 namespace HSNXT.Unirest.Net
@@ -50,13 +51,23 @@ namespace HSNXT.Unirest.Net
         }
 
         /// <summary>
-        /// Use this timeout value unless request specifies its own value for timeout
-        /// Throws System.Threading.Tasks.TaskCanceledException when timeout
+        /// Modifies the Unirest backing <see cref="HttpClient"/>'s settings in-place. The changes will affect
         /// </summary>
-        public static TimeSpan ConnectionTimeout
+        /// <param name="settingsMutator"><see cref="Action{T}"/> that takes in the existing client's settings and
+        /// changes them.</param>
+        public static void UpdateClient(Action<UnirestClientSettings> settingsMutator)
         {
-            get => HttpClientHelper.ConnectionTimeout;
-            set => HttpClientHelper.ConnectionTimeout = value;
+            settingsMutator(HttpClientHelper.ClientSettings);
+            HttpClientHelper.UpdateClientSettings(HttpClientHelper.ClientSettings);
+        }
+
+        /// <summary>
+        /// Sets the Unirest backing <see cref="HttpClient"/>'s settings.
+        /// </summary>
+        /// <param name="newSettings">The new settings to set.</param>
+        public static void UpdateClient(UnirestClientSettings newSettings)
+        {
+            HttpClientHelper.UpdateClientSettings(newSettings);
         }
     }
 

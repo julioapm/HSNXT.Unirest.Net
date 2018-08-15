@@ -21,11 +21,6 @@ namespace HSNXT.Unirest.Net
         private bool _hasExplicitBody;
         private int _fileCount;
         
-        /// <summary>
-        /// Connection timeout
-        /// </summary>
-        public TimeSpan Timeout { get; set; } = TimeSpan.MaxValue;
-
         public NetworkCredential NetworkCredentials { get; protected set; }
 
         protected Func<HttpRequestMessage, bool> InternalFilter;
