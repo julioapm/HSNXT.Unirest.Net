@@ -27,9 +27,9 @@ before_build:
 build: off
 
 build_script:
-  - ps: dotnet build "Fallk.Unirest.Net.csproj" -c Release
-  - ps: dotnet publish "Fallk.Unirest.Net.csproj" -c Release -f netstandard2.0
-  - ps: dotnet pack "Fallk.Unirest.Net.csproj" -c Release -o "Proj1" --no-build
+  - ps: dotnet build "HSNXT.Unirest.Net.csproj" -c Release
+  - ps: dotnet publish "HSNXT.Unirest.Net.csproj" -c Release -f netstandard2.0
+  - ps: dotnet pack "HSNXT.Unirest.Net.csproj" -c Release -o "Proj1" --no-build
 
 artifacts:
   - path: "**\\*.nupkg"
