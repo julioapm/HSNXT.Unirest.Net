@@ -38,13 +38,18 @@ namespace HSNXT.Unirest.Net
                 return UrlCached;
             }
 
-            if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var locurl))
+            if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var uri))
             {
-                throw new ArgumentException("The url passed is not a valid HTTP/S URL");
+                throw new ArgumentException("Not a valid HTTP/HTTPS URL", nameof(url));
+            }
+
+            if (uri.Scheme != "http" && uri.Scheme != "https")
+            {
+                throw new ArgumentException($"Scheme must be one of [http, https] but was {uri.Scheme}", nameof(url));
             }
 
             UrlStringCached = url;
-            return UrlCached = locurl;
+            return UrlCached = uri;
         }
 
         /// <inheritdoc />

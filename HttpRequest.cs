@@ -146,7 +146,12 @@ namespace HSNXT.Unirest.Net
         {
             if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var uri))
             {
-                throw new ArgumentException("The url passed to the HttpMethod constructor is not a valid HTTP/S URL");
+                throw new ArgumentException("Not a valid HTTP/HTTPS URL", nameof(url));
+            }
+
+            if (uri.Scheme != "http" && uri.Scheme != "https")
+            {
+                throw new ArgumentException($"Scheme must be one of [http, https] but was {uri.Scheme}", nameof(url));
             }
 
             Url = uri;
@@ -159,6 +164,11 @@ namespace HSNXT.Unirest.Net
         /// <param name="url">The URI to make the request with.</param>
         public HttpRequest(HttpMethod method, Uri url) : this(method)
         {
+            if (url.Scheme != "http" && url.Scheme != "https")
+            {
+                throw new ArgumentException($"Scheme must be one of [http, https] but was {url.Scheme}", nameof(url));
+            }
+
             Url = url;
         }
 
