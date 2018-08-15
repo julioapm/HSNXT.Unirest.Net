@@ -8,6 +8,9 @@ using System.Web;
 
 namespace HSNXT.Unirest.Net
 {
+    /// <summary>
+    /// Represents an HTTP request with an URL query params builder.
+    /// </summary>
     public class HttpRequestUrl : HttpRequest
     {
         /// <summary>

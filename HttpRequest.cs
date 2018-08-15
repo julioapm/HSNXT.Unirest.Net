@@ -15,6 +15,9 @@ using Newtonsoft.Json;
 
 namespace HSNXT.Unirest.Net
 {
+    /// <summary>
+    /// Represents an HTTP request in Unirest.
+    /// </summary>
     public class HttpRequest
     {
         private bool _hasFields;
