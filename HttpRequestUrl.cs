@@ -34,14 +34,8 @@ namespace HSNXT.Unirest.Net
             {
                 return UrlCached;
             }
-            if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var locurl))
-            {
-                if (!(locurl.IsAbsoluteUri && (locurl.Scheme == "http" || locurl.Scheme == "https")) || !locurl.IsAbsoluteUri)
-                {
-                    throw new ArgumentException("The url passed is not a valid HTTP/S URL");
-                }
-            }
-            else
+
+            if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var locurl))
             {
                 throw new ArgumentException("The url passed is not a valid HTTP/S URL");
             }
@@ -50,6 +44,15 @@ namespace HSNXT.Unirest.Net
             return UrlCached = locurl;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP request with an URL query params builder.
+        /// </summary>
+        /// <param name="method">The HTTP protocol method to send the request with.</param>
+        /// <param name="url">The URI to make the request with.</param>
+        /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
+        /// <see cref="SetField"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c> as it's the most common in
+        /// query strings.</param>
         public HttpRequestUrl(HttpMethod method, string url, bool encodeSpaceAsPlusSign = true) : base(method, url)
         {
             Fields = new FieldsDictUrl(this);
