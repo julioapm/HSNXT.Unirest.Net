@@ -137,6 +137,7 @@ namespace HSNXT.Unirest.Net
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
     /// Represents an HTTP GET request.
     /// </summary>
@@ -163,6 +164,7 @@ namespace HSNXT.Unirest.Net
         }
     }
     
+    /// <inheritdoc />
     /// <summary>
     /// Represents an HTTP PUT request.
     /// </summary>
@@ -188,6 +190,7 @@ namespace HSNXT.Unirest.Net
         }
     }
     
+    /// <inheritdoc />
     /// <summary>
     /// Represents an HTTP POST request.
     /// </summary>
@@ -213,6 +216,7 @@ namespace HSNXT.Unirest.Net
         }
     }
     
+    /// <inheritdoc />
     /// <summary>
     /// Represents an HTTP DELETE request.
     /// </summary>
@@ -238,6 +242,7 @@ namespace HSNXT.Unirest.Net
         }
     }
     
+    /// <inheritdoc />
     /// <summary>
     /// Represents an HTTP HEAD request.
     /// </summary>
@@ -263,6 +268,7 @@ namespace HSNXT.Unirest.Net
         }
     }
     
+    /// <inheritdoc />
     /// <summary>
     /// Represents an HTTP OPTIONS request.
     /// </summary>
@@ -288,6 +294,7 @@ namespace HSNXT.Unirest.Net
         }
     }
     
+    /// <inheritdoc />
     /// <summary>
     /// Represents an HTTP TRACE request.
     /// </summary>
@@ -313,6 +320,7 @@ namespace HSNXT.Unirest.Net
         }
     }
     
+    /// <inheritdoc />
     /// <summary>
     /// Represents an HTTP PATCH request.
     /// </summary>
@@ -340,50 +348,153 @@ namespace HSNXT.Unirest.Net
     
     // these ones don't have overloads that take in Uri, since the url builder doesn't play well with them.
     
+    /// <inheritdoc />
+    /// <summary>
+    /// Represents an HTTP GET request with an URL query params builder.
+    /// </summary>
     public class GetRequestUrl : HttpRequestUrl
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP GET request with an URL query params builder.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
+        /// <see cref="HttpRequestUrl.SetField(string,object)"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c>
+        /// as it's the most common in query strings.</param>
         public GetRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Get, url, encodeSpaceAsPlusSign)
         {
         }
     }
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Represents an HTTP PUT request with an URL query params builder.
+    /// </summary>
     public class PutRequestUrl : HttpRequestUrl
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP PUT request with an URL query params builder.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
+        /// <see cref="HttpRequestUrl.SetField(string,object)"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c>
+        /// as it's the most common in query strings.</param>
         public PutRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Put, url, encodeSpaceAsPlusSign)
         {
         }
     }
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Represents an HTTP POST request with an URL query params builder.
+    /// </summary>
     public class PostRequestUrl : HttpRequestUrl
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP POST request with an URL query params builder.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
+        /// <see cref="HttpRequestUrl.SetField(string,object)"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c>
+        /// as it's the most common in query strings.</param>
         public PostRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Post, url, encodeSpaceAsPlusSign)
         {
         }
     }
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Represents an HTTP DELETE request with an URL query params builder.
+    /// </summary>
     public class DeleteRequestUrl : HttpRequestUrl
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP DELETE request with an URL query params builder.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
+        /// <see cref="HttpRequestUrl.SetField(string,object)"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c>
+        /// as it's the most common in query strings.</param>
         public DeleteRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Delete, url, encodeSpaceAsPlusSign)
         {
         }
     }
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Represents an HTTP HEAD request with an URL query params builder.
+    /// </summary>
     public class HeadRequestUrl : HttpRequestUrl
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP HEAD request with an URL query params builder.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
+        /// <see cref="HttpRequestUrl.SetField(string,object)"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c>
+        /// as it's the most common in query strings.</param>
         public HeadRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Head, url, encodeSpaceAsPlusSign)
         {
         }
     }
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Represents an HTTP OPTIONS request with an URL query params builder.
+    /// </summary>
     public class OptionsRequestUrl : HttpRequestUrl
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP OPTIONS request with an URL query params builder.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
+        /// <see cref="HttpRequestUrl.SetField(string,object)"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c>
+        /// as it's the most common in query strings.</param>
         public OptionsRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Options, url, encodeSpaceAsPlusSign)
         {
         }
     }
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Represents an HTTP TRACE request with an URL query params builder.
+    /// </summary>
     public class TraceRequestUrl : HttpRequestUrl
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP TRACE request with an URL query params builder.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
+        /// <see cref="HttpRequestUrl.SetField(string,object)"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c>
+        /// as it's the most common in query strings.</param>
         public TraceRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(HttpMethod.Trace, url, encodeSpaceAsPlusSign)
         {
         }
     }
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Represents an HTTP PATCH request with an URL query params builder.
+    /// </summary>
     public class PatchRequestUrl : HttpRequestUrl
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP PATCH request with an URL query params builder.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
+        /// <see cref="HttpRequestUrl.SetField(string,object)"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c>
+        /// as it's the most common in query strings.</param>
         public PatchRequestUrl(string url, bool encodeSpaceAsPlusSign = true) : base(Unirest.PatchMethod, url, encodeSpaceAsPlusSign)
         {
         }
