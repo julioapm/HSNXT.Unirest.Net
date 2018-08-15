@@ -5,6 +5,9 @@ using HSNXT.Unirest.Net.Internals;
 
 namespace HSNXT.Unirest.Net
 {
+    /// <summary>
+    /// Unirest.Net request creation utility methods.
+    /// </summary>
     public static class Unirest
     {
         internal static readonly HttpMethod PatchMethod = new HttpMethod("PATCH");
@@ -134,55 +137,208 @@ namespace HSNXT.Unirest.Net
         }
     }
 
+    /// <summary>
+    /// Represents an HTTP GET request.
+    /// </summary>
     [Obsolete("Use GetRequestUrl for more complete GET request query support")]
     public class GetRequest : HttpRequest
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP GET request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
         public GetRequest(string url) : base(HttpMethod.Get, url)
         {
         }
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP GET request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public GetRequest(Uri url) : base(HttpMethod.Get, url)
+        {
+        }
     }
+    
+    /// <summary>
+    /// Represents an HTTP PUT request.
+    /// </summary>
     public class PutRequest : HttpRequest
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP PUT request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
         public PutRequest(string url) : base(HttpMethod.Put, url)
         {
         }
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP PUT request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public PutRequest(Uri url) : base(HttpMethod.Put, url)
+        {
+        }
     }
+    
+    /// <summary>
+    /// Represents an HTTP POST request.
+    /// </summary>
     public class PostRequest : HttpRequest
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP POST request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
         public PostRequest(string url) : base(HttpMethod.Post, url)
         {
         }
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP POST request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public PostRequest(Uri url) : base(HttpMethod.Post, url)
+        {
+        }
     }
+    
+    /// <summary>
+    /// Represents an HTTP DELETE request.
+    /// </summary>
     public class DeleteRequest : HttpRequest
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP DELETE request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
         public DeleteRequest(string url) : base(HttpMethod.Delete, url)
         {
         }
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP DELETE request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public DeleteRequest(Uri url) : base(HttpMethod.Delete, url)
+        {
+        }
     }
+    
+    /// <summary>
+    /// Represents an HTTP HEAD request.
+    /// </summary>
     public class HeadRequest : HttpRequest
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP HEAD request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
         public HeadRequest(string url) : base(HttpMethod.Head, url)
         {
         }
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP HEAD request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public HeadRequest(Uri url) : base(HttpMethod.Head, url)
+        {
+        }
     }
+    
+    /// <summary>
+    /// Represents an HTTP OPTIONS request.
+    /// </summary>
     public class OptionsRequest : HttpRequest
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP OPTIONS request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
         public OptionsRequest(string url) : base(HttpMethod.Options, url)
         {
         }
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP OPTIONS request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public OptionsRequest(Uri url) : base(HttpMethod.Options, url)
+        {
+        }
     }
+    
+    /// <summary>
+    /// Represents an HTTP TRACE request.
+    /// </summary>
     public class TraceRequest : HttpRequest
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP TRACE request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
         public TraceRequest(string url) : base(HttpMethod.Trace, url)
         {
         }
-    }
-    public class PatchRequest : HttpRequest
-    {
-        public PatchRequest(string url) : base(Unirest.PatchMethod, url)
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP TRACE request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public TraceRequest(Uri url) : base(HttpMethod.Trace, url)
         {
         }
     }
+    
+    /// <summary>
+    /// Represents an HTTP PATCH request.
+    /// </summary>
+    public class PatchRequest : HttpRequest
+    {
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP PATCH request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public PatchRequest(string url) : base(Unirest.PatchMethod, url)
+        {
+        }
+        
+        /// <inheritdoc />
+        /// <summary>
+        /// Creates a new HTTP PATCH request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public PatchRequest(Uri url) : base(Unirest.PatchMethod, url)
+        {
+        }
+    }
+    
+    // these ones don't have overloads that take in Uri, since the url builder doesn't play well with them.
     
     public class GetRequestUrl : HttpRequestUrl
     {
