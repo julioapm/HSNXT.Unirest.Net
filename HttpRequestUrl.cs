@@ -52,7 +52,7 @@ namespace HSNXT.Unirest.Net
         /// Creates a new HTTP request with an URL query params builder.
         /// </summary>
         /// <param name="method">The HTTP protocol method to send the request with.</param>
-        /// <param name="url">The URI to make the request with.</param>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
         /// <param name="encodeSpaceAsPlusSign">Whether to encode the space character when used in
         /// <see cref="SetField"/> as <c>+</c> or <c>%20</c>. The default is <c>true</c> as it's the most common in
         /// query strings.</param>
