@@ -126,27 +126,37 @@ namespace HSNXT.Unirest.Net
         /// </summary>
         public bool EnsureSuccess { get; set; }
 
-        // Should add overload that takes URL object
-        public HttpRequest(HttpMethod method, string url)
+        private HttpRequest(HttpMethod method)
         {
             Fields = new FieldsDict(this);
             JsonFields = new FieldsDictJson(this);
-            //Body = _body.Value;
-
-            if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var locurl))
-            {
-                if (!(locurl.IsAbsoluteUri && (locurl.Scheme == "http" || locurl.Scheme == "https")) || !locurl.IsAbsoluteUri)
-                {
-                    throw new ArgumentException("The url passed to the HttpMethod constructor is not a valid HTTP/S URL");
-                }
-            }
-            else
+            HttpMethod = method;
+        }
+        
+        /// <summary>
+        /// Creates a new HTTP request, parsing an url from a string.
+        /// </summary>
+        /// <param name="method">The HTTP protocol method to send the request with.</param>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public HttpRequest(HttpMethod method, string url) : this(method)
+        {
+            if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var uri))
             {
                 throw new ArgumentException("The url passed to the HttpMethod constructor is not a valid HTTP/S URL");
             }
 
-            Url = locurl;
-            HttpMethod = method;
+            Url = uri;
+        }
+
+        /// <summary>
+        /// Creates a new HTTP request.
+        /// </summary>
+        /// <param name="method">The HTTP protocol method to send the request with.</param>
+        /// <param name="url">The URI to make the request with.</param>
+        public HttpRequest(HttpMethod method, Uri url) : this(method)
+        {
+            Url = url;
         }
 
         public HttpRequest Header(string name, object value)

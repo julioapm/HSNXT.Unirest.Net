@@ -9,46 +9,109 @@ namespace HSNXT.Unirest.Net
     {
         internal static readonly HttpMethod PatchMethod = new HttpMethod("PATCH");
 
-        // Should add overload that takes URL object
-        public static HttpRequest Get(string url)
-        {
-            return new HttpRequest(HttpMethod.Get, url);
-        }
+        /// <summary>
+        /// Creates a new HTTP GET request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public static HttpRequest Get(string url) => new HttpRequest(HttpMethod.Get, url);
 
-        public static HttpRequest Post(string url)
-        {
-            return new HttpRequest(HttpMethod.Post, url);
-        }
+        /// <summary>
+        /// Creates a new HTTP POST request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public static HttpRequest Post(string url) => new HttpRequest(HttpMethod.Post, url);
 
-        public static HttpRequest Delete(string url)
-        {
-            return new HttpRequest(HttpMethod.Delete, url);
-        }
+        /// <summary>
+        /// Creates a new HTTP DELETE request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public static HttpRequest Delete(string url) => new HttpRequest(HttpMethod.Delete, url);
 
-        public static HttpRequest Patch(string url)
-        {
-            return new HttpRequest(PatchMethod, url);
-        }
+        /// <summary>
+        /// Creates a new HTTP PATCH request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public static HttpRequest Patch(string url) => new HttpRequest(PatchMethod, url);
 
-        public static HttpRequest Put(string url)
-        {
-            return new HttpRequest(HttpMethod.Put, url);
-        }
+        /// <summary>
+        /// Creates a new HTTP PUT request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public static HttpRequest Put(string url) => new HttpRequest(HttpMethod.Put, url);
 
-        public static HttpRequest Options(string url)
-        {
-            return new HttpRequest(HttpMethod.Options, url);
-        }
+        /// <summary>
+        /// Creates a new HTTP OPTIONS request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public static HttpRequest Options(string url) => new HttpRequest(HttpMethod.Options, url);
 
-        public static HttpRequest Head(string url)
-        {
-            return new HttpRequest(HttpMethod.Head, url);
-        }
+        /// <summary>
+        /// Creates a new HTTP HEAD request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public static HttpRequest Head(string url) => new HttpRequest(HttpMethod.Head, url);
 
-        public static HttpRequest Trace(string url)
-        {
-            return new HttpRequest(HttpMethod.Trace, url);
-        }
+        /// <summary>
+        /// Creates a new HTTP TRACE request.
+        /// </summary>
+        /// <param name="url">The HTTP/HTTPS URL to make the request with.</param>
+        /// <exception cref="ArgumentException">If <paramref name="url"/> is not a valid URL.</exception>
+        public static HttpRequest Trace(string url) => new HttpRequest(HttpMethod.Trace, url);
+
+        /// <summary>
+        /// Creates a new HTTP GET request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public static HttpRequest Get(Uri url) => new HttpRequest(HttpMethod.Get, url);
+
+        /// <summary>
+        /// Creates a new HTTP POST request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public static HttpRequest Post(Uri url) => new HttpRequest(HttpMethod.Post, url);
+
+        /// <summary>
+        /// Creates a new HTTP DELETE request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public static HttpRequest Delete(Uri url) => new HttpRequest(HttpMethod.Delete, url);
+
+        /// <summary>
+        /// Creates a new HTTP PATCH request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public static HttpRequest Patch(Uri url) => new HttpRequest(PatchMethod, url);
+
+        /// <summary>
+        /// Creates a new HTTP PUT request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public static HttpRequest Put(Uri url) => new HttpRequest(HttpMethod.Put, url);
+
+        /// <summary>
+        /// Creates a new HTTP OPTIONS request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public static HttpRequest Options(Uri url) => new HttpRequest(HttpMethod.Options, url);
+
+        /// <summary>
+        /// Creates a new HTTP HEAD request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public static HttpRequest Head(Uri url) => new HttpRequest(HttpMethod.Head, url);
+
+        /// <summary>
+        /// Creates a new HTTP TRACE request.
+        /// </summary>
+        /// <param name="url">The URI to make the request with.</param>
+        public static HttpRequest Trace(Uri url) => new HttpRequest(HttpMethod.Trace, url);
 
         /// <summary>
         /// Modifies the Unirest backing <see cref="HttpClient"/>'s settings in-place. The changes will affect
