@@ -860,7 +860,9 @@ namespace HSNXT.Unirest.Net
         #if DEBUG
         public static async void Btesta()
         {
+#pragma warning disable 618
             var b = await new GetRequest("")
+#pragma warning restore 618
             {
                 Fields =
                 {
