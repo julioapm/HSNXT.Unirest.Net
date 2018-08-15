@@ -9,9 +9,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace HSNXT.Unirest.Net.Entities
 {
-    // TODO Optional<>
-    // TODO Unirest.UpdateClient
-    // TODO put properties from HttpClient here as well
+    /// <summary>
+    /// Properties of the internal <see cref="HttpClient"/> and its <see cref="HttpMessageHandler"/>.
+    /// </summary>
     public class UnirestClientSettings
     {
         #region HttpClientHandler
