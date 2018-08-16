@@ -465,7 +465,7 @@ namespace HSNXT.Unirest.Net
         /// <param name="onFail">The callback to be called if the request fails</param>
         /// <returns>A task that resolves when either <paramref name="onSuccess"/> or <paramref name="onFail"/>
         /// have resolved.</returns>
-        public Task AsByteArrayAsync(OnSuccessAsync<string> onSuccess, OnFailAsync<string> onFail)
+        public Task AsByteArrayAsync(OnSuccessAsync<byte[]> onSuccess, OnFailAsync<byte[]> onFail)
         {
             if (onSuccess == null) throw new ArgumentNullException(nameof(onSuccess));
             if (onFail == null) throw new ArgumentNullException(nameof(onFail));
