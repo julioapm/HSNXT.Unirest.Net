@@ -3,14 +3,15 @@
 Improved version of Kong's Unirest.Net library.
 
 This library fixes a couple problems and improves upon Kong's library:
-* Fixed methods not using proper C# code style
-* Added real async (async methods simply used GetResult, so they ran synchronously)
-* Added shared HttpClient (this can lead to running out of file descriptors)
-* Authentication support
-* Support for uploading files (multipart requests)
-* Ported to .NET Standard
+* Fixed methods not being in proper C# code style (likely was a carryover from the Java version of Unirest)
+* Added real async (previously, async methods simply used GetResult, so they ran synchronously)
+* Added shared HttpClient (previously, a new HttpClient was used for every request, which can lead to running out of file descriptors)
+* HTTP Basic Authentication support
+* Support for uploading files (multipart/form-data requests)
+* Ported to .NET Standard 2.0
 * Added support for OPTIONS, HEAD and TRACE methods
 * Added an object initializer-based pattern for creating requests
+* Added a way to compose GET request query parameters
 
 Documentation is coming soon. In the meanwhile, you can use these test methods as reference:
 ```cs
